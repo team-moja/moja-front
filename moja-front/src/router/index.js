@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import HelpListView from '@/views/HelpListView.vue'
 import HelpCreateView from '@/views/HelpCreateView.vue'
 import HelpDetailView from '@/views/HelpDetailView.vue'
+import LoginView from '@/views/accounts/LoginView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -27,6 +28,11 @@ const router = createRouter({
       name: 'help-detail',
       component: HelpDetailView,
       props: true,
+    },
+    {
+      path: '/account/login',
+      name: 'login',
+      component: LoginView,
     },
   ],
 })
