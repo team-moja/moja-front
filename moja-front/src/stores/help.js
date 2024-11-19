@@ -49,7 +49,7 @@ import { defineStore } from 'pinia'
 
 export const useHelpStore = defineStore('help', () => {
   const helps = ref([])
-  const API_URL = 'http://127.0.0.1:8000/boards'
+  const API_URL = 'http://127.0.0.1:8000/boards/help'
   // 토큰 설정
   const TOKEN = '3e3e65d8b0ec4458a0847f712e39206240179b8a'
 
