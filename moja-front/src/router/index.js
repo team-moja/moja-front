@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import HelpListView from '@/views/HelpListView.vue'
-import HelpCreateView from '@/views/HelpCreateView.vue'
-import HelpDetailView from '@/views/HelpDetailView.vue'
+import HelpListView from '@/views/boards/HelpListView.vue'
+import HelpCreateView from '@/views/boards/HelpCreateView.vue'
+import HelpDetailView from '@/views/boards/HelpDetailView.vue'
 import LoginView from '@/views/accounts/LoginView.vue'
 import SigninView from '@/views/accounts/SigninView.vue'
 
