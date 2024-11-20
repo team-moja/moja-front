@@ -5,6 +5,12 @@ import HelpCreateView from '@/views/boards/HelpCreateView.vue'
 import HelpDetailView from '@/views/boards/HelpDetailView.vue'
 import LoginView from '@/views/accounts/LoginView.vue'
 import SigninView from '@/views/accounts/SigninView.vue'
+import ProductListView from '@/views/finances/ProductListView.vue'
+import ProductDetailView from '@/views/finances/ProductDetailView.vue'
+import ProductRecommendView from '@/views/finances/ProductRecommendView.vue'
+import ProductRecommendResultView from '@/views/finances/ProductRecommendResultView.vue'
+import MoneyChangeView from '@/views/exchange/MoneyChangeView.vue'
+import BankMapView from '@/views/map/BankMapView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -30,6 +36,8 @@ const router = createRouter({
       component: HelpDetailView,
       props: true,
     },
+
+
     {
       path: '/account/login',
       name: 'login',
@@ -39,6 +47,38 @@ const router = createRouter({
       path: '/account/signin',
       name: 'signin',
       component: SigninView,
+    },
+
+
+    {
+      path: '/product',
+      name: 'product',
+      component: ProductListView,
+    },
+    {
+      path: '/product/:id',
+      name: 'productDetail',
+      component: ProductDetailView,
+    },
+    {
+      path: '/product/recommend',
+      name: 'productRecommend',
+      component: ProductRecommendView,
+    },
+    {
+      path: '/product/recommend/resultd',
+      name: 'productRecommendResult',
+      component: ProductRecommendResultView,
+    },
+    {
+      path: '/exchange',
+      name: 'exchange',
+      component: MoneyChangeView,
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: BankMapView,
     },
   ],
 })

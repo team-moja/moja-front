@@ -20,30 +20,44 @@
           <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- 네비게이션 링크 -->
+        <!-- 네비게이션 -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
+            <!-- 검색 -->
+            <li class="nav-item">
+              <router-link to="/search" class="nav-link d-flex align-items-center">
+                <img src="/image/search.png" alt="검색" class="icon" />
+                <span class="d-lg-none ms-2">검색</span>
+              </router-link>
+            </li>
             <!-- 저장 -->
             <li class="nav-item">
               <router-link to="/saved-products" class="nav-link d-flex align-items-center">
                 <img src="/image/save.png" alt="저장" class="icon" />
-                <span class="d-lg-none ms-2">저장</span> <!-- 큰 화면에서 텍스트 숨김 -->
+                <span class="d-lg-none ms-2">저장</span>
+              </router-link>
+            </li>
+            <!-- 커뮤니티 -->
+            <li class="nav-item">
+              <router-link to="/community" class="nav-link d-flex align-items-center">
+                <img src="/image/community.png" alt="커뮤니티" class="icon" />
+                <span class="d-lg-none ms-2">커뮤니티</span>
               </router-link>
             </li>
             <!-- 프로필 -->
             <li class="nav-item">
               <router-link to="/profile" class="nav-link d-flex align-items-center">
                 <img src="/image/profile.png" alt="프로필" class="icon" />
-                <span class="d-lg-none ms-2">프로필</span> <!-- 큰 화면에서 텍스트 숨김 -->
+                <span class="d-lg-none ms-2">프로필</span>
               </router-link>
             </li>
-            <!-- 검색 -->
-            <li class="nav-item">
-              <router-link to="/search" class="nav-link d-flex align-items-center">
-                <img src="/image/search.png" alt="검색" class="icon" />
-                <span class="d-lg-none ms-2">검색</span> <!-- 큰 화면에서 텍스트 숨김 -->
+            <!-- 랭킹: 넣을지 안 넣을지 고민 중 -->
+            <!-- <li class="nav-item">
+              <router-link to="/ranking" class="nav-link d-flex align-items-center">
+                <img src="/image/ranking.png" alt="랭킹" class="icon" />
+                <span class="d-lg-none ms-2">랭킹</span>
               </router-link>
-            </li>
+            </li> -->
           </ul>
         </div>
       </div>
@@ -52,32 +66,28 @@
 </template>
 
 <style scoped>
-/* 아이콘 크기 */
 .icon {
   width: 20px;
   height: 20px;
 }
 
-/* Navbar 텍스트 스타일 */
 .nav-link span {
   font-size: 14px;
   font-weight: 500;
   color: #333;
 }
 
-/* 텍스트 호버 효과 */
 .nav-link:hover span {
   color: #40a2e3;
 }
 
-/* 큰 화면에서 텍스트 숨김 */
 .d-lg-none {
-  display: none !important; /* 기본적으로 숨김 */
+  display: none !important;
 }
 
 @media (max-width: 992px) {
   .d-lg-none {
-    display: inline !important; /* 작은 화면에서 텍스트 표시 */
+    display: inline !important;
   }
 }
 </style>
