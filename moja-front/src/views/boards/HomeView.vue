@@ -25,8 +25,7 @@
                 <p class="post-text">{{ post.content }}</p>
               </div>
               <div class="post-stats">
-                <span>👍 {{ post.likes }}</span>
-                <span>❤️ {{ post.hearts }}</span>
+                <span>❤️ {{ post.likes }}</span>
               </div>
             </div>
           </div>
@@ -65,16 +64,15 @@
 
           <!-- 모달 -->
           <transition name="modal">
-            <div v-if="isModalOpen" class="modal-overlay">
+            <div v-if="isModalOpen" class="modal-overlay" @click="closeModal">
               <div class="modal-content" @click.stop>
                 <div class="modal-header">
                   <h3>기능 바로가기</h3>
-                  <button class="close-button" @click="closeModal">&times;</button>
                 </div>
                 <div class="modal-body">
-                  <button class="modal-button" @click="handleButtonClick('compare')">비교함</button>
-                  <button class="modal-button" @click="handleButtonClick('findBranch')">지점 찾기</button>
-                  <button class="modal-button" @click="handleButtonClick('calculator')">환율 계산기</button>
+                  <button class="modal-button">비교함</button>
+                  <button class="modal-button">지점 찾기</button>
+                  <button class="modal-button">환율 계산기</button>
                 </div>
               </div>
             </div>
@@ -112,21 +110,18 @@ const hotPosts = ref([
     badge: "📈 TODAY 모자",
     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
     likes: 20,
-    hearts: 30
   },
   {
     id: 2,
     badge: "👑 주간 모자",
     content: "광주은행 n년차 행원이 추천해주는 생활비 절약 tip 3가지",
     likes: 20,
-    hearts: 30
   },
   {
     id: 3,
     badge: "👑 월간 모자",
     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
     likes: 20,
-    hearts: 30
   }
 ]);
 
@@ -289,28 +284,26 @@ const startRecommendation = () => {
   height: 60px;
   cursor: pointer;
   transition: all 0.3s ease;
-  filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1));
 }
 
 .cap-icon:hover {
-  transform: scale(1.1) rotate(-10deg);
-  filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.2));
+  transform: scale(1.1);
 }
 
 /* 모달 애니메이션 */
 .modal-enter-active,
 .modal-leave-active {
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .modal-enter-from {
   opacity: 0;
-  transform: scale(0.9);
+  transform: translate(10px);
 }
 
 .modal-leave-to {
   opacity: 0;
-  transform: scale(1.1);
+  transform: translate(10px);
 }
 
 /* 모달 스타일 */
@@ -320,37 +313,56 @@ const startRecommendation = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(13, 146, 118, 0.2); /* #0D9276 with opacity */
-  backdrop-filter: blur(5px);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background: rgba(128, 128, 128, 0.3); /* #0D9276 with opacity */
+  backdrop-filter: blur(2px);
+  display: block;
   z-index: 1000;
 }
 
 .modal-content {
-  width: 320px;
-  background: #FFF6E9;
-  border-radius: 20px;
-  box-shadow: 0 10px 25px rgba(64, 162, 227, 0.2);
+  position: absolute;
+  bottom: 120px; /* 모자 아이콘 위치보다 위에 */
+  right: 0;
+  width: 200px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
-  position: relative;
-  transform-origin: center;
 }
 
 .modal-header {
-  padding: 1.2rem;
-  background: #40A2E3;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  padding: 0.8rem;
+  /* background: #40A2E3; */
+  padding: 0.8rem;
+  text-align: center;
+  background: #fff;
+  border-bottom: 1px solid #eee;
 }
 
 .modal-header h3 {
   margin: 0;
-  font-size: 1.3rem;
-  color: white;
+  font-size: 1rem;
+  color: #333;
   font-weight: 600;
+}
+
+.modal-body {
+  padding: 0.8rem;
+}
+
+.modal-button {
+  display: block;
+  width: 100%;
+  padding: 0.8rem;
+  margin: 0.3rem 0;
+  border: none;
+  border-radius: 8px;
+  background-color: #b4bbc0;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .close-button {
@@ -369,36 +381,17 @@ const startRecommendation = () => {
   transform: rotate(90deg);
 }
 
-.modal-body {
-  padding: 1.5rem;
-  background: linear-gradient(to bottom, #FFF6E9, #BBE2EC);
-}
-
-.modal-button {
-  display: block;
-  width: 100%;
-  padding: 1rem;
-  margin: 0.8rem 0;
-  border: none;
-  border-radius: 12px;
-  background-color: #40A2E3;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-size: 1.1rem;
-  font-weight: 500;
-  text-align: center;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
 .modal-button:hover {
-  background-color: #0D9276;
+  background-color: #40A2E3;
   transform: translateY(-2px);
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
 }
 
+/* .modal-button:hover {
+  background-color: #0D9276;
+} */
+
 .modal-button:active {
-  transform: translateY(0);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -416,19 +409,20 @@ const startRecommendation = () => {
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
- .fixed-cap-icon {
-   bottom: 20px;
-   right: 20px;
- }
+  .fixed-cap-icon {
+    bottom: 20px;
+    right: 20px;
+  }
 
- .cap-icon {
-   width: 50px;
-   height: 50px;
- }
+.cap-icon {
+  width: 50px;
+  height: 50px;
+}
 
- .modal-content {
-   width: 90%;
-   margin: 0 20px;
- }
+.modal-content {
+  bottom: 80px;
+  right: 20px;
+  width: 180px;
+}
 }
 </style>
