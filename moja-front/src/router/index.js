@@ -10,6 +10,7 @@ import ProductDetailView from '@/views/finances/ProductDetailView.vue'
 import ProductRecommendView from '@/views/finances/ProductRecommendView.vue'
 import ProductRecommendResultView from '@/views/finances/ProductRecommendResultView.vue'
 import MoneyChangeView from '@/views/exchange/MoneyChangeView.vue'
+import BankMapView from '@/views/map/BankMapView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -73,6 +74,11 @@ const router = createRouter({
       path: '/exchange',
       name: 'exchange',
       component: MoneyChangeView,
+    },
+    {
+      path: '/map',
+      name: 'map',
+      component: BankMapView,
     },
   ],
 })
