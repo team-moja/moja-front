@@ -47,9 +47,16 @@
           </ul>
         </div>
       </div>
+      <a href="#" class="nav-item">모자 챌린지</a>
+      <RouterLink to="/product">예적금</RouterLink>
     </nav>
   </header>
 </template>
+
+<script setup>
+import { RouterLink } from 'vue-router';
+</script>
+
 
 <style scoped>
 /* 아이콘 크기 */
