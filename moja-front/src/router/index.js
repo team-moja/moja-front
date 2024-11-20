@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/boards/CommunityView.vue'
 import HelpListView from '@/views/boards/HelpListView.vue'
 import HelpCreateView from '@/views/boards/HelpCreateView.vue'
 import HelpDetailView from '@/views/boards/HelpDetailView.vue'
@@ -11,6 +10,9 @@ import ProductRecommendView from '@/views/finances/ProductRecommendView.vue'
 import ProductRecommendResultView from '@/views/finances/ProductRecommendResultView.vue'
 import MoneyChangeView from '@/views/exchange/MoneyChangeView.vue'
 import BankMapView from '@/views/map/BankMapView.vue'
+import HomeView from '@/views/boards/HomeView.vue'
+import CommunityView from '@/views/boards/CommunityView.vue'
+import MyProfile from '@/views/accounts/MyProfile.vue'  // 마이페이지 프로필
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -79,6 +81,17 @@ const router = createRouter({
       path: '/map',
       name: 'map',
       component: BankMapView,
+    },
+    {
+      path: '/community',
+      name: 'community',
+      component: CommunityView
+    },
+    {
+      path: '/profile',
+      name: 'profile',
+      component: MyProfile,
+      // meta: { requiresAuth: true }
     },
   ],
 })
