@@ -35,7 +35,6 @@ const submitHelp = async () => {
     router.push({ name: "help-list" });
   } catch (error) {
     console.error("질문 생성 중 오류 발생:", error);
-    // 여기에 사용자에게 오류 메시지를 보여주는 로직을 추가할 수 있습니다
   }
 };
 </script>
