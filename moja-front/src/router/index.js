@@ -7,6 +7,8 @@ import LoginView from '@/views/accounts/LoginView.vue'
 import SigninView from '@/views/accounts/SigninView.vue'
 import ProductListView from '@/views/finances/ProductListView.vue'
 import ProductDetailView from '@/views/finances/ProductDetailView.vue'
+import ProductRecommendView from '@/views/finances/ProductRecommendView.vue'
+import ProductRecommendResultView from '@/views/finances/ProductRecommendResultView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -45,6 +47,7 @@ const router = createRouter({
       component: SigninView,
     },
 
+
     {
       path: '/product',
       name: 'product',
@@ -54,6 +57,16 @@ const router = createRouter({
       path: '/product/:id',
       name: 'productDetail',
       component: ProductDetailView,
+    },
+    {
+      path: '/product/recommend',
+      name: 'productRecommend',
+      component: ProductRecommendView,
+    },
+    {
+      path: '/product/recommend/resultd',
+      name: 'productRecommendResult',
+      component: ProductRecommendResultView,
     },
   ],
 })
