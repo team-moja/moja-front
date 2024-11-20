@@ -1,70 +1,83 @@
-<!-- Header.vue -->
 <template>
-  <header class="header">
-    <div class="logo">MOJA</div>
-    <nav class="nav-links">
-      <a href="#" class="nav-item">모자 랭킹</a>
-      <a href="#" class="nav-item">공지사항</a>
-      <div class="dropdown">
-        <a href="#" class="nav-item">자유 게시판</a>
-        <div class="dropdown-content">
-          <a href="#">추천해요</a>
-          <a href="#">이건 몰랐지?</a>
-          <a href="#">질문 있어요</a>
+  <header>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container-fluid">
+        <!-- 로고 -->
+        <router-link to="/" class="navbar-brand d-flex align-items-center">
+          <span class="fs-4">🧢 MOJA</span>
+        </router-link>
+
+        <!-- 토글 버튼 (작은 화면) -->
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarNav"
+          aria-controls="navbarNav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- 네비게이션 링크 -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <!-- 저장 -->
+            <li class="nav-item">
+              <router-link to="/saved-products" class="nav-link d-flex align-items-center">
+                <img src="/image/save.png" alt="저장" class="icon" />
+                <span class="d-lg-none ms-2">저장</span> <!-- 큰 화면에서 텍스트 숨김 -->
+              </router-link>
+            </li>
+            <!-- 프로필 -->
+            <li class="nav-item">
+              <router-link to="/profile" class="nav-link d-flex align-items-center">
+                <img src="/image/profile.png" alt="프로필" class="icon" />
+                <span class="d-lg-none ms-2">프로필</span> <!-- 큰 화면에서 텍스트 숨김 -->
+              </router-link>
+            </li>
+            <!-- 검색 -->
+            <li class="nav-item">
+              <router-link to="/search" class="nav-link d-flex align-items-center">
+                <img src="/image/search.png" alt="검색" class="icon" />
+                <span class="d-lg-none ms-2">검색</span> <!-- 큰 화면에서 텍스트 숨김 -->
+              </router-link>
+            </li>
+          </ul>
         </div>
       </div>
-      <a href="#" class="nav-item">모자 챌린지</a>
     </nav>
   </header>
 </template>
 
 <style scoped>
-.header {
-  background-color: white;
-  padding: 1rem 2rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* 아이콘 크기 */
+.icon {
+  width: 20px;
+  height: 20px;
 }
 
-.logo {
-  font-size: 1.5rem;
-  font-weight: bold;
+/* Navbar 텍스트 스타일 */
+.nav-link span {
+  font-size: 14px;
+  font-weight: 500;
+  color: #333;
+}
+
+/* 텍스트 호버 효과 */
+.nav-link:hover span {
   color: #40a2e3;
 }
 
-.nav-links {
-  display: flex;
-  gap: 2rem;
-  margin-top: 1rem;
+/* 큰 화면에서 텍스트 숨김 */
+.d-lg-none {
+  display: none !important; /* 기본적으로 숨김 */
 }
 
-.nav-item {
-  color: #333;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: white;
-  min-width: 160px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: #333;
-  padding: 12px 16px;
-  text-decoration: none;
-  display: block;
-}
-
-.dropdown:hover .dropdown-content {
-  display: block;
+@media (max-width: 992px) {
+  .d-lg-none {
+    display: inline !important; /* 작은 화면에서 텍스트 표시 */
+  }
 }
 </style>

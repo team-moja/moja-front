@@ -6,7 +6,8 @@
 
     <!-- 페이지별 콘텐츠 -->
     <main class="main-content">
-      <slot />
+      <!-- <slot /> -->
+      <HomeView></HomeView>
     </main>
 
     <!-- Footer -->
@@ -17,6 +18,7 @@
 <script setup>
 import Header from '@/components/Header.vue';
 import Footer from '@/components/Footer.vue';
+import HomeView from '@/views/boards/HomeView.vue';
 </script>
 
 <style scoped>
