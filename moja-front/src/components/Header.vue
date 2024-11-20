@@ -25,6 +25,12 @@
           <ul class="navbar-nav ms-auto">
             <!-- 저장 -->
             <li class="nav-item">
+              <router-link to="/" class="nav-link d-flex align-items-center">
+                메인
+                <span class="d-lg-none ms-2">저장</span> <!-- 큰 화면에서 텍스트 숨김 -->
+              </router-link>
+            </li>
+            <li class="nav-item">
               <router-link to="/saved-products" class="nav-link d-flex align-items-center">
                 <img src="/image/save.png" alt="저장" class="icon" />
                 <span class="d-lg-none ms-2">저장</span> <!-- 큰 화면에서 텍스트 숨김 -->
@@ -41,13 +47,13 @@
             <li class="nav-item">
               <router-link to="/search" class="nav-link d-flex align-items-center">
                 <img src="/image/search.png" alt="검색" class="icon" />
-                <span class="d-lg-none ms-2">검색</span> <!-- 큰 화면에서 텍스트 숨김 -->
+                <!-- <span class="d-lg-none ms-2">검색</span> 큰 화면에서 텍스트 숨김 -->
               </router-link>
             </li>
           </ul>
         </div>
       </div>
-      <a href="#" class="nav-item">모자 챌린지</a>
+      <!-- <a href="#" class="nav-item">모자 챌린지</a> -->
       <RouterLink to="/product">예적금</RouterLink>
     </nav>
   </header>
