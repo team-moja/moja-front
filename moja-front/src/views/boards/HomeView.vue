@@ -38,8 +38,8 @@
             <h2 class="section-title">🏆 진행 중인 챌린지</h2>
             <div class="challenge-card">
               <span class="challenge-badge">💰 30만원으로 한 달 살기!</span>
-              <span class="challenge-progress">🔵 30</span>
-              <span class="challenge-total">㍕ 18/20</span>
+              <span class="challenge-progress">🧢💰 30</span>
+              <span class="challenge-total"> 👨‍👦‍👦18/20</span>
               <p class="challenge-description">매일 소비내역 인증하고 알뜰살뜰한 연말을 보내고 싶으신 분들? 모이세요 !!!</p>
             </div>
           </div>
