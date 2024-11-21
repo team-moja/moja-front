@@ -1,8 +1,11 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import {useRouter} from 'vue-router'
 import axios from 'axios'
 
+
 export const useAccountStore = defineStore('counter', () => {
+  const router = useRouter()
   const token = ref('')
   const BASE_URL = 'http://127.0.0.1:8000/accounts'
   const login = function(loginData) {
@@ -18,6 +21,7 @@ export const useAccountStore = defineStore('counter', () => {
       console.log('로그인 성공');
       token.value = res.data.key
       console.log(token.value);
+      router.push('/')
     })
     .catch((err) => {
       console.log(err);

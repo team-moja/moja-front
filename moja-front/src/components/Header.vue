@@ -64,6 +64,16 @@
                 <span class="d-lg-none ms-2">랭킹</span>
               </router-link>
             </li> -->
+            <li class="nav-item" v-if="accountStore.token === ''">
+              <router-link to="/account/login" class="nav-link d-flex align-items-center">
+                <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
+                <span class="ms-2">로그인</span>
+              </router-link>
+            </li>
+            <li class="nav-item" v-if="accountStore.token !== ''" @click="logout">
+                <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
+                <span class="ms-2">로그아웃</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -72,6 +82,21 @@
     </nav>
   </header>
 </template>
+
+<script setup>
+import { useAccountStore } from '@/stores/account';
+import axios from 'axios';
+const accountStore = useAccountStore()
+
+const logout = function () {
+  axios({
+    url: `http://127.0.0.1:8000/accounts/dj-rest-auth/logout/`,
+    method: 'post'
+  })
+  accountStore.token = ''
+}
+
+</script>
 
 <style scoped>
 .icon {
