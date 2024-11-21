@@ -1,7 +1,5 @@
 <template>
   <div class="currency-converter">
-    <h2>환율 계산기</h2>
-    
     <!-- 사용자 입력 (금액) -->
     <div>
       <label for="amount">금액</label>

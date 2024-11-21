@@ -83,7 +83,7 @@
                 <div class="modal-body">
                   <button class="modal-button">비교함</button>
                   <button class="modal-button">지점 찾기</button>
-                  <button class="modal-button">환율 계산기</button>
+                  <button class="modal-button" @click="openExchange">환율 계산기</button>
                 </div>
               </div>
             </div>
@@ -91,6 +91,20 @@
 
         </div>
       </div>
+
+      <div v-if="isExchange" class="modal-backdrop">
+      <div class="exchange-modal-content">
+        <div class="exchange-modal-header">
+          <h5 class="exchange-modal-title">환율 계산기</h5>
+        </div>
+        <div class="exchange-modal-body">
+          <MoneyChangeView/>
+        </div>
+        <div class="exchange-modal-footer">
+          <button class="btn btn-secondary" @click="openExchange">닫기</button>
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -98,7 +112,9 @@
 
 <script setup>
 import { ref } from 'vue';
+import MoneyChangeView from '../exchange/MoneyChangeView.vue';
 const isModalOpen = ref(false);
+const isExchange = ref(false)
 
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
@@ -113,6 +129,11 @@ const handleButtonClick = (action) => {
  // 각 버튼에 대한 동작 구현
   closeModal();
 };
+
+const openExchange = function () {
+  isExchange.value = !isExchange.value
+  console.log(isExchange.value);
+}
 
 // HOT 게시글 데이터
 const hotPosts = ref([
@@ -559,5 +580,50 @@ const startRecommendation = () => {
     padding: 0.8rem;
     font-size: 0.9rem;
   }
+}
+
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내용 */
+.exchange-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 */
+.exchange-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+/* 닫기 버튼 */
+.exchange-btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.exchange-modal-footer {
+  text-align: right;
 }
 </style>
