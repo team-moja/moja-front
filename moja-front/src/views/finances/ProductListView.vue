@@ -38,8 +38,8 @@
 
         <div class="row g-4">
           <div v-for="product in filteredList" :key="product.id" class="col-lg-4 col-md-6 col-sm-12">
-            <div class="card h-100 shadow-sm" @click="moveToDetail(product.id)">
-              <div class="card-body">
+            <div class="card h-100 shadow-sm">
+              <div class="card-body" @click="moveToDetail(product.id)">
                 <div class="d-flex align-items-center mb-3">
                   <img :src="`/src/assets/images/banks/${product.bank.bank_name}.png`" alt="logo"
                     class="bank-logo me-3" />
@@ -71,6 +71,7 @@ import '@/assets/css/finances/ProductListView.css';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+
 
 // 필터 데이터
 const banks = ref([
@@ -211,6 +212,10 @@ const productList = ref([]);
 const filteredList = ref([]);
 const router = useRouter();
 
+const moveToDetail = function (productId) {
+    router.push({name: 'productDetail', params: {id: productId}})
+}
+
 const moveToRecommend = function () {
   router.push('/product/recommend');
 };
@@ -272,4 +277,5 @@ onMounted(() => {
 });
 </script>
 
-<style scoped></style>
+<style scoped>
+</style>
