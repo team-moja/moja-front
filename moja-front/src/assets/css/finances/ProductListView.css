@@ -58,6 +58,9 @@
 .bank-filter, .rate-slider, .search-section {
   margin-left: -10px; /* 필터 섹션을 왼쪽으로 이동 */
 }
+.search-section{
+  margin-top: 30px;
+}
 
 .rate-slider {
   padding: 15px;
