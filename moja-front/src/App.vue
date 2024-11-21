@@ -39,6 +39,55 @@ const moveToSignin = function () {
 </script>
 
 <style>
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 100;
+  src: url("@/assets/fonts/The Jamsil 1 Thin.ttf") format("woff2");
+}
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 300;
+  src: url("@/assets/fonts/The Jamsil 2 Light.ttf") format("woff2");
+}
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 400;
+  src: url("@/assets/fonts/The Jamsil 3 Regular.ttf") format("woff2");
+}
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 500;
+  src: url("@/assets/fonts/The Jamsil 4 Medium.ttf") format("woff2");
+}
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 700;
+  src: url("@/assets/fonts/The Jamsil 5 Bold.ttf") format("woff2");
+}
+@font-face {
+  font-family: "TheJamsil5";
+  font-style: normal;
+  font-weight: 800;
+  src: url("@/assets/fonts/The Jamsil 6 ExtraBold.ttf") format("woff2");
+}
+
+@font-face {
+    font-family: 'Dovemayo-Medium';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_four@1.0/Dovemayo-Medium.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+* {
+  font-family: 'TheJamsil5';
+  font-weight: 400;
+}
+
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;

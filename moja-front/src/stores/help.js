@@ -91,4 +91,4 @@ export const useHelpStore = defineStore('help', () => {
   }
 
   return { helps, getHelps, createHelp }
-})
+}, { persist: true })

@@ -17,4 +17,4 @@ export const useCardStore = defineStore('card', {
       }
     },
   },
-})
+}, { persist: true })

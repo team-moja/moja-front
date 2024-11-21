@@ -1,33 +1,241 @@
 <template>
-  <div>
-    <h1>상세</h1>
-    <p>{{ product.prdt_name }}</p>
-    <p>{{ product.bank.bank_name }}</p>
+  <div class="container py-5" v-if="product.id">
+    <!-- 상품 정보 카드 -->
+    <div class="card mb-4 shadow-sm">
+      <div class="card-body">
+        <div class="row align-items-center">
+          <!-- 은행 로고 -->
+          <div class="col-auto">
+            <img :src="`/src/assets/images/banks/${product.bank.bank_name}.png`" alt="은행 로고" class="rounded-circle" />
+          </div>
+          <!-- 상품명 및 은행명 -->
+          <div class="col">
+            <h5 class="mb-0">{{ product.prdt_name }}</h5>
+            <small class="text-muted">{{ product.bank.bank_name }}</small>
+          </div>
+          <!-- 최고 금리 -->
+          <div class="col-auto text-start">
+            <div class="d-flex flex-column align-items-start">
+              <p>🔼 최고 금리: {{ highestOption.max_intr_rate }}% (기간: {{ highestOption.save_trm }}개월)</p>
+              <p>🔽 최저 금리: {{ lowestOption.max_intr_rate }}% (기간: {{ lowestOption.save_trm }}개월)</p>
+            </div>
+          </div>
+        </div>
+        <hr />
+        <!-- 상세 정보 -->
+        <div class="row">
+          <div class="col-12">
+            <p>📅 <b>가입기간</b>: {{ product.product_options[0].save_trm }}개월 ~ {{
+    product.product_options[product.product_options.length - 1].save_trm }}개월</p>
+            <p v-if="product.max_limit !== null">💰 <b>최대 가입금액</b>: {{ formatMaxLimit(product.max_limit) }}</p>
+            <p v-else>💰 <b>최대 가입금액</b>: 제한 없음</p>
+            <p>👤 <b>대상</b>: {{ product.join_member }}</p>
+            <p>🏦 <b>가입방법</b>: {{ product.join_way }}</p>
+          </div>
+        </div>
+        <!-- 7. 버튼 정렬: 공간 나누기 (equal spacing) -->
+        <div class="d-flex justify-content-between mt-3">
+          <a :href="product.bank.bank_url" class="btn btn-outline-secondary flex-grow-1 me-1">은행사 바로가기</a>
+          <button class="btn btn-outline-secondary flex-grow-1 ms-1" @click="toggleModal">지점 검색하기</button>
+        </div>
+      </div>
+    </div>
+
+    <div v-if="isModalOpen" class="modal-backdrop">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">지점 검색</h5>
+        </div>
+        <div class="modal-body">
+          <MapTest />
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="toggleModal">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 추가정보 섹션 -->
+    <div class="card p-4 border-dashed">
+      <div class="row">
+        <div class="col-12">
+          <h5>💱 만기 후 이자율 조건</h5>
+          <p v-html="formatText(product.mtrt_int)"></p>
+          <h5>⭐ 특별 조건</h5>
+          <p v-html="formatText(product.spcl_cnd)"></p>
+          <h5>📋 기타</h5>
+          <p>{{ product.etc_note }}</p>
+        </div>
+      </div>
+      <button class="btn custom-button text-white">내 상품 등록하기</button>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {ref, onMounted} from 'vue'
+import MapTest from '@/components/MapTest.vue'
+import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 
-const route = useRoute()
-const productId = route.params.id
+// 현재 URL 경로에서 productId 가져오기
+const route = useRoute();
+const productId = route.params.id;
 
-const product = ref({})
+// product 상태 관리
+const product = ref({});
+const highestOption = ref({});
+const lowestOption = ref({});
 
+const isModalOpen = ref(false)
+
+const toggleModal = function () {
+  isModalOpen.value = !isModalOpen.value
+}
+
+// 컴포넌트가 마운트될 때 데이터를 가져옴
 onMounted(() => {
   axios({
     url: `http://127.0.0.1:8000/finances/product/detail/${productId}`,
-    method: 'get'
-  })
-  .then((res) => {
-    product.value = res.data
-  })
-})
+    method: 'get',
+  }).then((res) => {
+    product.value = res.data;
 
+    // 금리 데이터 중 최고, 최저를 계산
+    if (product.value.product_options && product.value.product_options.length > 0) {
+      const options = product.value.product_options;
+      highestOption.value = options.reduce((max, option) => (option.max_intr_rate > max.max_intr_rate ? option : max), options[0]);
+      lowestOption.value = options.reduce((min, option) => (option.max_intr_rate < min.max_intr_rate ? option : min), options[0]);
+    }
+  });
+});
+
+function formatText(text) {
+  if (!text) return ""; // 빈 값 처리
+  return text.replace(/\n/g, "<br>");
+}
+
+function formatMaxLimit(maxLimit) {
+  if (maxLimit === null) {
+    return "제한 없음";
+  }
+  if (maxLimit >= 100000000) {
+    // 억 단위 표시
+    return `${Math.floor(maxLimit / 100000000)}억 ${Math.floor((maxLimit % 100000000) / 10000)}만원`;
+  } else if (maxLimit >= 10000) {
+    // 만원 단위 표시
+    return `${Math.floor(maxLimit / 10000)}만원`;
+  }
+  return `${maxLimit}원`; // 1만원 미만 금액
+}
 </script>
 
 <style scoped>
+.card {
+  max-width: 700px;
+  word-wrap: break-word;
+  /* 긴 단어 줄바꿈 */
+  word-break: break-word;
+  /* 단어가 너무 길 경우 줄바꿈 */
+  overflow-wrap: break-word;
+  /* 텍스트가 넘칠 경우 줄바꿈 */
+}
 
+p {
+  white-space: normal;
+  /* 텍스트가 기본적으로 줄바꿈 가능 */
+}
+
+.custom-button {
+  background-color: #0D9276;
+  /* 버튼 배경 색상 */
+  border-color: #0D9276;
+  /* 버튼 테두리 색상 */
+}
+
+.custom-button:hover {
+  background-color: #0B7F63;
+  /* 호버 시 색상 */
+  border-color: #0B7F63;
+}
+
+.high-button {
+  background-color: #0D9276;
+  /* 버튼 배경 색상 */
+  border-color: #0D9276;
+  /* 버튼 테두리 색상 */
+}
+
+.btn-outline-secondary:hover {
+  background-color: #40A2E3;
+  border: #40A2E3;
+}
+
+
+
+
+.border-dashed {
+  border: 2px dashed #ccc;
+}
+
+.card-body img {
+  width: 60px;
+  height: 60px;
+}
+
+.card-body {
+  max-width: 800px;
+  /* 최대 크기 제한 */
+  /* width: 600px; */
+  padding: 20px;
+  /* 내부 여백 조절 */
+  margin: auto;
+  /* 가운데 정렬 */
+}
+
+
+/* 모달 */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내용 */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+/* 닫기 버튼 */
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-footer {
+  text-align: right;
+}
 </style>

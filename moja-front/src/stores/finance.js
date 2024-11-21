@@ -10,6 +10,8 @@ export const useFinanceStore = defineStore("finance", () => {
   // 추천 상품 리스트 상태
   const recommendProductLists = ref([]);
 
+  const selectedProduct = ref()
+
   // 추천 상품 요청 함수
   const router = useRouter()
   const recommendProduct = async (inputData) => {
@@ -26,5 +28,5 @@ export const useFinanceStore = defineStore("finance", () => {
   };
 
   // 반환되는 항목 (스토어 외부에서 접근 가능)
-  return { recommendProduct, recommendProductLists };
-});
+  return { recommendProduct, recommendProductLists, selectedProduct};
+}, { persist: true });
