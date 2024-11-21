@@ -43,4 +43,4 @@ export const useAccountStore = defineStore('counter', () => {
   };
 
   return {login, BASE_URL, token, logout}
-})
+}, { persist: true })

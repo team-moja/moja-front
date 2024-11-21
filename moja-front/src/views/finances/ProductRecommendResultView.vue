@@ -1,13 +1,13 @@
 <template>
   <div>
-    <h1>결과</h1>
-    <ProductRecommendList/>
+    <ProductRecommendList :recommendProductLists="financeStore.recommendProductLists"/>
   </div>
 </template>
 
 <script setup>
 import ProductRecommendList from '@/components/financese/ProductRecommendList.vue';
-
+import { useFinanceStore } from '@/stores/finance';
+const financeStore = useFinanceStore()
 
 </script>
 
