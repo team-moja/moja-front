@@ -20,16 +20,16 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="(help, index) in helps" :key="help.id">
+          <tr v-for="help in helps" :key="help.id">
             <td>{{ help.id }}</td>
-            <td>{{ help.category || '질문 있어요' }}</td>
-            <td>{{ help.nickname || '사용자' }}</td>
+            <td>질문 있어요</td>
+            <td>{{ help.user }}</td>
             <td class="title-cell">
-              <router-link :to="`/help/${help.id}`">
+              <router-link :to="{name:'help-detail', params: {id:help.id}}">
                 {{ help.help_title }}
               </router-link>
             </td>
-            <td>{{ formatDate(help.created_at) }}</td>
+            <td>{{ formatDate(help.help_date) }}</td>
           </tr>
         </tbody>
       </table>
@@ -39,21 +39,20 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useHelpStore } from '@/stores/help';
 
 const store = useHelpStore();
 
-onMounted(() => {
-  store.getHelps();
+onMounted(async () => {
+  await store.getHelps()
 });
 
-const helps = store.helps;
+const helps = computed(() => store.helps);
 
 const formatDate = (date) => {
   if (!date) return '';
-  const d = new Date(date);
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return date.split('T')[0];
 };
 </script>
 
@@ -159,12 +158,13 @@ const formatDate = (date) => {
 }
 
 .title-cell a {
-  color: #333;
+  color: inherit;
   text-decoration: none;
 }
 
 .title-cell a:hover {
   color: #40A2E3;
+  text-decoration: underline;
 }
 
 </style>

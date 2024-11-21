@@ -14,16 +14,26 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import { compileScript } from "vue/compiler-sfc";
 
 const route = useRoute();
 const help = ref(null);
+const TOKEN = 'cbb6b39a5e1c06f66b2e3fc705cfa9a25f0da6f5';
 
 onMounted(async () => {
-  const response = await axios.get(
-    `http://127.0.0.1:8000/boards/help/${route.params.id}/`
-  );
-  help.value = response.data;
-});
+  try {
+    const response = await axios.get(
+      `http://127.0.0.1:8000/boards/help/${route.params.id}/`,
+      {
+        headers: {
+          'Authorization': `Token ${TOKEN}`
+        }
+      }
+    );
+    help.value = response.data;
+} catch (error) {
+  console.error('게시글 로드 실패', error);
+}});
 </script>
 
 <style scoped>
