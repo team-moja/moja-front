@@ -1,5 +1,5 @@
 <template>
-  <div class="container py-5" v-if="product.id">
+  <div class="child-container py-5" v-if="product.id">
     <!-- 상품 정보 카드 -->
     <div class="card mb-4 shadow-sm">
       <div class="card-body">
@@ -131,6 +131,24 @@ function formatMaxLimit(maxLimit) {
 </script>
 
 <style scoped>
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.child-container {
+  max-width: 900px; /* 중앙 콘텐츠의 최대 너비 */
+  margin: 0 auto; /* 가로 방향으로 중앙 정렬 */
+  padding: 20px; /* 내부 여백 */
+  display: flex; /* 내용 정렬을 위해 flexbox 사용 */
+  flex-direction: column; /* 세로 정렬 */
+  align-items: center; /* 수평 중앙 정렬 */
+  justify-content: center; /* 수직 중앙 정렬 */
+  min-height: 100vh; /* 화면 전체 높이를 차지 */
+}
+
 .card {
   max-width: 700px;
   word-wrap: break-word;
