@@ -5,7 +5,7 @@
       <div class="banner-content">
         <div class="banner-grid">
           <div class="banner-text">
-            <h1 class="nowrap">모으자 자산! 모르겠다 자산관리!</h1>
+            <h1 class="nowrap">모으자 자산!<br>모르겠다 자산관리!</h1>
             <p class="nowrap">간단한 과정을 거쳐 최적의 상품을 추천받을 수 있습니다.</p>
             <button @click="startRecommendation" class="start-button">시작하기</button>
           </div>
@@ -17,9 +17,7 @@
     </section>
 
     <!-- 카드 섹션 -->
-    <div class="main-content">
-      <!-- 카드 슬라이더 섹션 (이전 코드와 동일) -->
-      
+    <div class="main-content">      
       <!-- 하단 콘텐츠 섹션 -->
       <div class="bottom-container">
         <!-- HOT 게시글 -->
@@ -54,8 +52,14 @@
           <!-- 추천받기 버튼 섹션 -->
           <div class="recommendation-section">
             <div class="recommendation-buttons">
-              <button class="rec-button">카드 추천받기</button>
-              <button class="rec-button">예적금 추천받기</button>
+              <button class="rec-button">
+                <span class="button-text-long">카드 추천받기</span>
+                <span class="button-text-short">카드</span>
+              </button>
+              <button class="rec-button">
+                <span class="button-text-long">예적금 추천받기</span>
+                <span class="button-text-short">예적금</span>
+              </button>
             </div>
           </div>
 
@@ -149,7 +153,7 @@ const startRecommendation = () => {
   width: 100vw;
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
-  padding: 3rem 0;
+  padding: 1rem 0;
   overflow: hidden; /* 텍스트가 배너 밖으로 넘어가는 것을 방지 */
 }
 
@@ -173,11 +177,11 @@ const startRecommendation = () => {
   gap: 1rem;
 }
 
-.nowrap {
+/* .nowrap {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
+} */
 
 .banner-text h1 {
   font-size: 2.5rem;
@@ -333,12 +337,22 @@ const startRecommendation = () => {
   color: #FFFFFF;
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
 }
 
 .rec-button:hover {
   background-color: #0D9276;
   color: #FFFFFF;
 }
+
+.button-text-long {
+  display: inline-block;
+}
+
+.button-text-short {
+  display: none;
+}
+
 
 .fixed-cap-icon {
   position: fixed;
@@ -529,6 +543,21 @@ const startRecommendation = () => {
     width: 100%;
     box-sizing: border-box;
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .button-text-long {
+    display: none;
+  }
+  
+  .button-text-short {
+    display: inline-block;
+  }
+  
+  .rec-button {
+    padding: 0.8rem;
+    font-size: 0.9rem;
   }
 }
 </style>
