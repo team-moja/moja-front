@@ -3,9 +3,16 @@
     <!-- Main Banner -->
     <section class="banner-section">
       <div class="banner-content">
-        <h1>모으자 자산! 모르겠다 자산관리!</h1>
-        <p>간단한 과정을 거쳐 최적의 상품을 추천받을 수 있습니다.</p>
-        <button @click="startRecommendation" class="start-button">시작하기</button>
+        <div class="banner-grid">
+          <div class="banner-text">
+            <h1 class="nowrap">모으자 자산! 모르겠다 자산관리!</h1>
+            <p class="nowrap">간단한 과정을 거쳐 최적의 상품을 추천받을 수 있습니다.</p>
+            <button @click="startRecommendation" class="start-button">시작하기</button>
+          </div>
+          <div class="banner-image">
+            <img src="/image/mainmoney.png" alt="메인 이미지" class="main-money-image" />
+          </div>
+        </div>
       </div>
     </section>
 
@@ -143,13 +150,74 @@ const startRecommendation = () => {
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   padding: 3rem 0;
-  text-align: center;
+  overflow: hidden; /* 텍스트가 배너 밖으로 넘어가는 것을 방지 */
 }
 
 .banner-content {
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+}
+
+.banner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 2rem;
+}
+
+.banner-text {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nowrap {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.banner-text h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.banner-text p {
+  font-size: 1.2rem;
+  margin-bottom: 2rem;
+}
+
+.banner-image {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.main-money-image {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.start-button {
+  background-color: #0D9276;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  white-space: nowrap;
+}
+
+.start-button:hover {
+  background-color: #0B7B63;
+  transform: translateY(-2px);
 }
 
 .main-content {
@@ -408,6 +476,17 @@ const startRecommendation = () => {
 
 
 /* 반응형 디자인 */
+@media (max-width: 1200px) {
+  .banner-text h1 {
+    font-size: calc(1.5rem + 1vw);
+  }
+  
+  .banner-text p {
+    font-size: calc(0.9rem + 0.5vw);
+  }
+}
+
+
 @media (max-width: 768px) {
   .fixed-cap-icon {
     bottom: 20px;
@@ -424,5 +503,32 @@ const startRecommendation = () => {
   right: 20px;
   width: 180px;
 }
+
+.banner-section {
+    padding: 1.5rem 0;
+  }
+
+  .banner-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .banner-text h1,
+  .banner-text p,
+  .banner-image {
+    display: none;
+  }
+
+  .banner-text {
+    gap: 0;
+  }
+
+  .start-button {
+    font-size: 1rem;
+    padding: 1rem 1.8rem;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+  }
 }
 </style>
