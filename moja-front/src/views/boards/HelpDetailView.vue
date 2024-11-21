@@ -54,7 +54,6 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
-// import { compileScript } from "vue/compiler-sfc";
 
 const route = useRoute();
 const help = ref(null);
@@ -62,14 +61,14 @@ const comments = ref([]);
 const newComment = ref("");
 const isLiked = ref(false);
 const likeCount = ref(0);
-const TOKEN = "cbb6b39a5e1c06f66b2e3fc705cfa9a25f0da6f5";
+const TOKEN = "ef0011f73b048ba1ff73644cdcabfdc7dbec8fe0";
 
 const formatDate = (date) => {
   if (!date) return "";
   return date.split("T")[0];
 };
 
-// 게시글 데이터 로드
+// 게시글 데이터 로드 및 좋아요 상태 초기화
 onMounted(async () => {
   try {
     const response = await axios.get(
@@ -81,6 +80,11 @@ onMounted(async () => {
       }
     );
     help.value = response.data;
+
+    // 좋아요 상태 초기화
+    likeCount.value = response.data.like_count;
+    isLiked.value = response.data.is_liked;
+
     loadComments();
   } catch (error) {
     console.error("게시글 로드 실패", error);
@@ -139,6 +143,8 @@ const toggleLike = async () => {
         },
       }
     );
+
+    // 서버에서 받은 최신 좋아요 수와 상태로 업데이트
     likeCount.value = response.data.like_count;
     isLiked.value = response.data.is_liked;
   } catch (error) {
@@ -208,7 +214,7 @@ const toggleLike = async () => {
 
 .like-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid #40A2E3;
+  border: 1px solid #40a2e3;
   border-radius: 20px;
   background: white;
   cursor: pointer;
@@ -216,7 +222,7 @@ const toggleLike = async () => {
 }
 
 .like-btn.liked {
-  background: #40A2E3;
+  background: #40a2e3;
   color: white;
 }
 
@@ -240,7 +246,7 @@ const toggleLike = async () => {
 }
 
 .comment-btn {
-  background-color: #40A2E3;
+  background-color: #40a2e3;
   color: white;
 }
 
@@ -257,7 +263,7 @@ const toggleLike = async () => {
 
 .comment-author {
   font-weight: bold;
-  color: #40A2E3;
+  color: #40a2e3;
 }
 
 .comment-date {
