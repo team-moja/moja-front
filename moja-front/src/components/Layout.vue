@@ -7,7 +7,7 @@
     <!-- 페이지별 콘텐츠 -->
     <main class="main-content">
       <!-- <slot /> -->
-      <!-- <HomeView></HomeView> -->
+
       <RouterView/>
     </main>
 
