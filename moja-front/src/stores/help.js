@@ -51,12 +51,12 @@ export const useHelpStore = defineStore('help', () => {
   const helps = ref([])
   const API_URL = 'http://127.0.0.1:8000/boards/help'
   // 토큰 설정
-  const TOKEN = '3e3e65d8b0ec4458a0847f712e39206240179b8a'
+  const TOKEN = 'cbb6b39a5e1c06f66b2e3fc705cfa9a25f0da6f5'
 
   // 질문 게시글 리스트 가져오기
   const getHelps = async () => {    
     try {
-      const response = await axios.get(`${API_URL}/help/`, {
+      const response = await axios.get(`${API_URL}/`, {
         headers: {
           'Authorization': `Token ${TOKEN}`
         }
@@ -73,15 +73,17 @@ export const useHelpStore = defineStore('help', () => {
   const createHelp = async (helpData) => {
     try {
       const response = await axios.post(
-        `${API_URL}/help/`, 
+        `${API_URL}/`, 
         helpData,
         {
           headers: {
-            'Authorization': `Token ${TOKEN}`
+            'Authorization': `Token ${TOKEN}`,
+            'Content-Type': 'application/json',
           }
         }
       )
       helps.value.unshift(response.data)
+      return response.data
     } catch (error) {
       console.error('질문 생성 실패:', error.response)
       throw error

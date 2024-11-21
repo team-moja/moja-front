@@ -34,7 +34,7 @@ const submitHelp = async () => {
     await store.createHelp(helpData);
     router.push({ name: "help-list" });
   } catch (error) {
-    console.error("질문 생성 중 오류 발생:", error);
+    console.error("질문 생성 중 오류 발생:", error.response?.data || error.message);
   }
 };
 </script>
