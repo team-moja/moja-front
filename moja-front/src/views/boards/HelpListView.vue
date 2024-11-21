@@ -4,10 +4,12 @@
 
     <!-- Main Content -->
     <main class="main-content">
-      <h1 class="board-title">질문 있어요</h1>
-      <router-link to="/help/create">
-        <button class="create-btn">글쓰기</button>
-      </router-link>
+      <div class="header-section">
+        <h1 class="board-title">질문 있어요</h1>
+        <router-link to="/help/create">
+          <button class="create-btn">글쓰기</button>
+        </router-link>
+      </div>
 
       <table class="board-table">
         <thead>
@@ -57,6 +59,14 @@ const formatDate = (date) => {
 </script>
 
 <style scoped>
+.header-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
 .page-container {
   min-height: 100vh;
   display: flex;
@@ -122,7 +132,8 @@ const formatDate = (date) => {
 .board-title {
   color: #40A2E3;
   font-size: 1.8rem;
-  margin-bottom: 1.5rem;
+  /* margin-bottom: 1.5rem; */
+  margin: 0;
 }
 
 .create-btn {
@@ -132,7 +143,11 @@ const formatDate = (date) => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-bottom: 1rem;
+  transition: background-color 0.2s;
+}
+
+.create-btn:hover {
+  background-color: #2C7BA8;
 }
 
 .board-table {
@@ -164,7 +179,6 @@ const formatDate = (date) => {
 
 .title-cell a:hover {
   color: #40A2E3;
-  text-decoration: underline;
+  /* text-decoration: solid underline #40A2e3 4px; */
 }
-
 </style>
