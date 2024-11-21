@@ -65,28 +65,56 @@
               </router-link>
             </li> -->
             <li class="nav-item" v-if="accountStore.token === ''">
-              <router-link to="/account/login" class="nav-link d-flex align-items-center">
+              <a class="nav-link d-flex align-items-center">
                 <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
-                <span class="ms-2">로그인</span>
-              </router-link>
+                <span class="ms-2" @click="toggleModal">로그인</span>
+              </a>
             </li>
-            <li class="nav-item" v-if="accountStore.token !== ''" @click="logout">
+            <a class="nav-link d-flex align-items-center">
+              <li class="nav-item" v-if="accountStore.token !== ''" @click="logout">
                 <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
                 <span class="ms-2">로그아웃</span>
+              </li>
+            </a>
+            <li class="nav-item">
+              <RouterLink to="/product" class="nav-link d-flex align-items-center">
+                <span>예적금</span>
+              </RouterLink>
             </li>
           </ul>
         </div>
+        <div v-if="accountStore.isSuccess" class="modal-backdrop">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title">로그인</h3>
+        </div>
+        <div class="modal-body">
+          <Login/>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" @click="toggleModal">닫기</button>
+        </div>
+      </div>
+    </div>
       </div>
       <!-- <a href="#" class="nav-item">모자 챌린지</a> -->
-      <RouterLink to="/product">예적금</RouterLink>
     </nav>
   </header>
 </template>
 
 <script setup>
 import { useAccountStore } from '@/stores/account';
+import { ref, watch } from 'vue';
 import axios from 'axios';
+import Login from '@/components/Login.vue'
 const accountStore = useAccountStore()
+const isModalOpen = ref(false)
+
+const toggleModal = function () {
+  accountStore.isSuccess = !accountStore.isSuccess
+}
+
+
 
 const logout = function () {
   axios({
@@ -116,6 +144,50 @@ const logout = function () {
 
 .d-lg-none {
   display: none !important;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* 모달 내용 */
+.modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 600px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+/* 닫기 버튼 */
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.modal-footer {
+  text-align: right;
 }
 
 @media (max-width: 992px) {

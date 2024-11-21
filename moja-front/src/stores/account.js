@@ -8,6 +8,7 @@ export const useAccountStore = defineStore('counter', () => {
   const router = useRouter()
   const token = ref('')
   const BASE_URL = 'http://127.0.0.1:8000/accounts'
+  const isSuccess = ref(false)
   const login = function(loginData) {
     axios({
         url: `${BASE_URL}/dj-rest-auth/login/`,
@@ -18,14 +19,15 @@ export const useAccountStore = defineStore('counter', () => {
       }
     })
     .then((res) => {
-      console.log('로그인 성공');
-      token.value = res.data.key
-      console.log(token.value);
-      router.push('/')
+      token.value = res.data.key;
+      isSuccess.value = !isSuccess.value
+      console.log(isSuccess.value);
     })
     .catch((err) => {
-      console.log(err);
-    })
+      // console.error(err);
+      window.alert('로그인이 실패했습니다!')
+      isSuccess.value = true; // 로그인 실패 시 false
+    });
   }
 
   const logout = function() {
@@ -46,5 +48,5 @@ export const useAccountStore = defineStore('counter', () => {
     // 예시: this.$router.push('/login');
   };
 
-  return {login, BASE_URL, token, logout}
+  return {login, BASE_URL, token, logout, isSuccess}
 }, { persist: true })
