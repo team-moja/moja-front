@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HelpListView from '@/views/boards/HelpListView.vue'
 import HelpCreateView from '@/views/boards/HelpCreateView.vue'
 import HelpDetailView from '@/views/boards/HelpDetailView.vue'
-import LoginView from '@/views/accounts/LoginView.vue'
 import SigninView from '@/views/accounts/SigninView.vue'
 import ProductListView from '@/views/finances/ProductListView.vue'
 import ProductDetailView from '@/views/finances/ProductDetailView.vue'
@@ -39,12 +38,6 @@ const router = createRouter({
       props: true,
     },
 
-
-    {
-      path: '/account/login',
-      name: 'login',
-      component: LoginView,
-    },
     {
       path: '/account/signin',
       name: 'signin',
