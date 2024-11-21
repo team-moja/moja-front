@@ -91,8 +91,9 @@
         <div class="modal-body">
           <Login/>
         </div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" @click="toggleModal">닫기</button>
+        <div class="modal-footer d-flex justify-content-between mt-4">
+          <button class="btn btn-secondary larger-button" @click="moveToSignIn">회원가입</button>
+          <button class="btn btn-secondary larger-button" @click="toggleModal">닫기</button>
         </div>
       </div>
     </div>
@@ -105,6 +106,7 @@
 <script setup>
 import { useAccountStore } from '@/stores/account';
 import { ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import axios from 'axios';
 import Login from '@/components/Login.vue'
 const accountStore = useAccountStore()
@@ -114,7 +116,12 @@ const toggleModal = function () {
   accountStore.isSuccess = !accountStore.isSuccess
 }
 
+const router = useRouter()
 
+const moveToSignIn = function () {
+  accountStore.isSuccess = false
+  router.push('/account/signin')
+}
 
 const logout = function () {
   axios({
@@ -188,6 +195,11 @@ const logout = function () {
 
 .modal-footer {
   text-align: right;
+}
+
+.larger-button {
+  width: 150px;
+  font-size: 16px; /* 폰트 크기 증가 */
 }
 
 @media (max-width: 992px) {
