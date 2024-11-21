@@ -111,26 +111,18 @@ const loadComments = async () => {
 // 댓글 작성
 const submitComment = async () => {
   if (!newComment.value.trim()) return;
-
   try {
     const response = await axios.post(
       `http://127.0.0.1:8000/boards/help/${route.params.id}/comments/`,
-      {
-        help_comment_content: newComment.value,
-      },
-      {
-        headers: {
-          Authorization: `Token ${TOKEN}`,
-        },
-      }
+      { help_comment_content: newComment.value },
+      { headers: { Authorization: `Token ${TOKEN}` } }
     );
     comments.value.unshift(response.data);
     newComment.value = "";
   } catch (error) {
-    console.error("댓글 작성 실패:", error);
+    console.error("댓글 작성 실패:", error.response?.data);
   }
 };
-
 // 좋아요 토글
 const toggleLike = async () => {
   try {
