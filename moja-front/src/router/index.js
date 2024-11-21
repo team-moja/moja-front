@@ -9,11 +9,11 @@ import ProductDetailView from '@/views/finances/ProductDetailView.vue'
 import ProductRecommendView from '@/views/finances/ProductRecommendView.vue'
 import ProductRecommendResultView from '@/views/finances/ProductRecommendResultView.vue'
 import MoneyChangeView from '@/views/exchange/MoneyChangeView.vue'
+import ProductComparisonView from '@/views/finances/ProductComparisonView.vue'
 import BankMapView from '@/views/map/BankMapView.vue'
 import HomeView from '@/views/boards/HomeView.vue'
 import CommunityView from '@/views/boards/CommunityView.vue'
 import MyProfile from '@/views/accounts/MyProfile.vue'  // 마이페이지 프로필
-
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -68,7 +68,12 @@ const router = createRouter({
       component: ProductRecommendView,
     },
     {
-      path: '/product/recommend/resultd',
+      path: "/product/comparison",
+      name: "productComparison",
+      component: ProductComparisonView,
+    },
+    {
+      path: '/product/recommend/result',
       name: 'productRecommendResult',
       component: ProductRecommendResultView,
     },

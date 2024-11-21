@@ -1,5 +1,5 @@
 <template>
-  <div class="recommendation-container">
+  <div class="recommendation-page container">
     <h1>예/적금 추천</h1>
     <p>혜택이 모자라~~</p>
 
@@ -44,7 +44,7 @@
       </div>
     </div>
 
-    <button @click="sendRecommend">추천</button>
+    <button class="custom-button" @click="sendRecommend">추천</button>
   </div>
 </template>
 
@@ -74,22 +74,27 @@ const sendRecommend = function () {
 </script>
 
 <style scoped>
-.recommendation-container {
-  max-width: 500px;
+/* 페이지 컨테이너 스타일 */
+.recommendation-page {
+  max-width: 800px;
   margin: 0 auto;
+  padding: 20px;
   text-align: center;
 }
 
+/* 헤더 스타일 */
 h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-p {
-  color: #888;
+  font-size: 2rem;
   margin-bottom: 20px;
 }
 
+p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+/* 선택 상자 */
 .select-container {
   margin-bottom: 20px;
   text-align: left;
@@ -97,26 +102,27 @@ p {
 
 .select-container label {
   display: block;
-  margin-bottom: 5px;
   font-weight: bold;
+  margin-bottom: 5px;
 }
 
 .select-container select {
   width: 100%;
   padding: 8px;
-  border: 1px solid #ccc;
   border-radius: 4px;
+  border: 1px solid #ccc;
 }
 
+/* 슬라이더 */
 .slider-container {
   margin-bottom: 20px;
   text-align: left;
 }
 
 .slider-container label {
-  display: block;
-  margin-bottom: 5px;
   font-weight: bold;
+  margin-bottom: 5px;
+  display: block;
 }
 
 .slider {
@@ -133,4 +139,22 @@ p {
   min-width: 80px;
   text-align: right;
 }
+
+/* 버튼 스타일 */
+.custom-button {
+  background-color: #0D9276;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.custom-button:hover {
+  background-color: #0B7F63;
+}
 </style>
+
