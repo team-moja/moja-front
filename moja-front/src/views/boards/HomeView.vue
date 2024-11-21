@@ -342,7 +342,7 @@ const startRecommendation = () => {
 
 .rec-button:hover {
   background-color: #0D9276;
-  color: #FFFFFF;
+  transform: translateY(-2px);
 }
 
 .button-text-long {
