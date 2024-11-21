@@ -82,7 +82,7 @@
                 </div>
                 <div class="modal-body">
                   <button class="modal-button">비교함</button>
-                  <button class="modal-button">지점 찾기</button>
+                  <button class="modal-button" @click="openMap">지점 찾기</button>
                   <button class="modal-button" @click="openExchange">환율 계산기</button>
                 </div>
               </div>
@@ -105,6 +105,20 @@
         </div>
       </div>
     </div>
+
+    <div v-if="isMap" class="modal-backdrop">
+      <div class="map-modal-content">
+        <div class="map-modal-header">
+          <h5 class="map-modal-title">지점 검색</h5>
+        </div>
+        <div class="map-modal-body">
+          <MapTest />
+        </div>
+        <div class="map-modal-footer">
+          <button class="btn btn-secondary" @click="openMap">닫기</button>
+        </div>
+      </div>
+    </div>
     </div>
   </div>
 </template>
@@ -113,8 +127,10 @@
 <script setup>
 import { ref } from 'vue';
 import MoneyChangeView from '../exchange/MoneyChangeView.vue';
+import MapTest from '@/components/MapTest.vue';
 const isModalOpen = ref(false);
 const isExchange = ref(false)
+const isMap = ref(false)
 
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
@@ -133,6 +149,11 @@ const handleButtonClick = (action) => {
 const openExchange = function () {
   isExchange.value = !isExchange.value
   console.log(isExchange.value);
+}
+
+const openMap = function () {
+  isMap.value = !isMap.value
+  console.log(isMap.value);
 }
 
 // HOT 게시글 데이터
@@ -624,6 +645,37 @@ const startRecommendation = () => {
 }
 
 .exchange-modal-footer {
+  text-align: right;
+}
+
+
+.map-modal-content {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 800px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* 헤더 */
+.map-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5e5e5;
+  margin-bottom: 10px;
+}
+
+/* 닫기 버튼 */
+.map-btn-close {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.map-modal-footer {
   text-align: right;
 }
 </style>
