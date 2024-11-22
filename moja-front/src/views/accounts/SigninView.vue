@@ -1,3 +1,4 @@
+<!-- accounts/SigninView.vue -->
 <template>
   <div class="signup-container">
     <h1 class="title">회원가입</h1>
