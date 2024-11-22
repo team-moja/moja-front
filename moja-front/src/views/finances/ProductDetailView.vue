@@ -67,35 +67,55 @@
           <p>{{ product.etc_note }}</p>
         </div>
       </div>
-      <button class="btn custom-button text-white" @click="saveUserProduct(product.id)">내 상품 등록하기</button>
+      <button class="btn custom-button text-white" @click="saveUserProduct(product.id)" v-show="!isHave">내 상품 등록하기</button>
+      <button class="btn btn-danger text-white" @click="deleteUserProduct(product.id)" v-show="isHave">내 상품 삭제하기</button>
     </div>
   </div>
 </template>
 
 <script setup>
-import MapTest from '@/components/MapTest.vue'
-import { ref, computed, onMounted } from 'vue';
+import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAccountStore } from '@/stores/account';
 
-// 현재 URL 경로에서 productId 가져오기
 const route = useRoute();
 const productId = route.params.id;
-const accountStore = useAccountStore()
+const accountStore = useAccountStore();
 
-// product 상태 관리
 const product = ref({});
 const highestOption = ref({});
 const lowestOption = ref({});
 
-const isModalOpen = ref(false)
+const isModalOpen = ref(false);
+const isHave = ref(); // 기본값 수정 (등록 여부는 데이터에 따라 결정됨)
 
-const myProduct = ref([])
+const myProduct = ref([]); // 유저가 등록한 상품 리스트
 
 const toggleModal = function () {
-  isModalOpen.value = !isModalOpen.value
-}
+  isModalOpen.value = !isModalOpen.value;
+};
+
+const deleteUserProduct = function (productId) {
+  axios({
+    url: "http://127.0.0.1:8000/finances/user-product/",
+    method: "delete",
+    data: {
+      "product_id": productId,
+    },
+  })
+    .then((res) => {
+      window.alert("삭제 성공");
+      console.log(res.data);
+
+      // 삭제 후 상품 목록 갱신
+      myProduct.value = myProduct.value.filter((item) => item.product.id !== productId);
+      isHave.value = !myProduct.value.some((item) => item.product.id === product.id); // 상태 업데이트
+    })
+    .catch((err) => {
+      console.error('에러 발생', err);
+    });
+};
 
 const saveUserProduct = function (productId) {
   axios({
@@ -103,28 +123,31 @@ const saveUserProduct = function (productId) {
     method: "post",
     data: {
       "user_id": accountStore.userId,
-      "product_id": productId
-    }
+      "product_id": productId,
+    },
   })
     .then((res) => {
-      window.alert("등록 성공")
+      window.alert("등록 성공");
       console.log(res.data);
+
+      // 등록 후 상품 목록 갱신
+      myProduct.value.push(res.data); // 새로 등록된 상품 추가
+      isHave.value = true; // 등록 상태로 변경
     })
     .catch((err) => {
-      console.log('에러발생');
-      console.log(err);
-    })
-}
+      console.error('에러 발생', err);
+    });
+};
 
-// 컴포넌트가 마운트될 때 데이터를 가져옴
+// 초기 데이터 로드
 onMounted(() => {
+  // 상품 상세 정보 로드
   axios({
     url: `http://127.0.0.1:8000/finances/product/detail/${productId}`,
     method: 'get',
   }).then((res) => {
     product.value = res.data;
 
-    // 금리 데이터 중 최고, 최저를 계산
     if (product.value.product_options && product.value.product_options.length > 0) {
       const options = product.value.product_options;
       highestOption.value = options.reduce((max, option) => (option.max_intr_rate > max.max_intr_rate ? option : max), options[0]);
@@ -132,23 +155,26 @@ onMounted(() => {
     }
   });
 
+  // 유저가 등록한 상품 리스트 로드
   if (accountStore.userId !== 0) {
     axios({
       url: "http://127.0.0.1:8000/finances/user-product/",
       method: "get",
       params: {
         "user_id": accountStore.userId,
-      }
-    })
-      .then((res) => {
-        console.log(res.data);
-        myProduct.value = res.data
-      })
+      },
+    }).then((res) => {
+      console.log(res.data);
+      myProduct.value = res.data;
+
+      // 현재 상품이 등록된 상태인지 확인
+      isHave.value = myProduct.value.some((item) => item.product.id === productId);
+    });
   }
 });
 
 function formatText(text) {
-  if (!text) return ""; // 빈 값 처리
+  if (!text) return ""; 
   return text.replace(/\n/g, "<br>");
 }
 
@@ -157,13 +183,11 @@ function formatMaxLimit(maxLimit) {
     return "제한 없음";
   }
   if (maxLimit >= 100000000) {
-    // 억 단위 표시
     return `${Math.floor(maxLimit / 100000000)}억 ${Math.floor((maxLimit % 100000000) / 10000)}만원`;
   } else if (maxLimit >= 10000) {
-    // 만원 단위 표시
     return `${Math.floor(maxLimit / 10000)}만원`;
   }
-  return `${maxLimit}원`; // 1만원 미만 금액
+  return `${maxLimit}원`; 
 }
 </script>
 
