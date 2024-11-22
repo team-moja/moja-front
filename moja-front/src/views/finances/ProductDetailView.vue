@@ -26,7 +26,7 @@
         <div class="row">
           <div class="col-12">
             <p>📅 <b>가입기간</b>: {{ product.product_options[0].save_trm }}개월 ~ {{
-    product.product_options[product.product_options.length - 1].save_trm }}개월</p>
+              product.product_options[product.product_options.length - 1].save_trm }}개월</p>
             <p v-if="product.max_limit !== null">💰 <b>최대 가입금액</b>: {{ formatMaxLimit(product.max_limit) }}</p>
             <p v-else>💰 <b>최대 가입금액</b>: 제한 없음</p>
             <p>👤 <b>대상</b>: {{ product.join_member }}</p>
@@ -67,7 +67,7 @@
           <p>{{ product.etc_note }}</p>
         </div>
       </div>
-      <button class="btn custom-button text-white">내 상품 등록하기</button>
+      <button class="btn custom-button text-white" @click="saveUserProduct(product.id)">내 상품 등록하기</button>
     </div>
   </div>
 </template>
@@ -77,10 +77,12 @@ import MapTest from '@/components/MapTest.vue'
 import { ref, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
+import { useAccountStore } from '@/stores/account';
 
 // 현재 URL 경로에서 productId 가져오기
 const route = useRoute();
 const productId = route.params.id;
+const accountStore = useAccountStore()
 
 // product 상태 관리
 const product = ref({});
@@ -89,8 +91,29 @@ const lowestOption = ref({});
 
 const isModalOpen = ref(false)
 
+const myProduct = ref([])
+
 const toggleModal = function () {
   isModalOpen.value = !isModalOpen.value
+}
+
+const saveUserProduct = function (productId) {
+  axios({
+    url: "http://127.0.0.1:8000/finances/user-product/",
+    method: "post",
+    data: {
+      "user_id": accountStore.userId,
+      "product_id": productId
+    }
+  })
+    .then((res) => {
+      window.alert("등록 성공")
+      console.log(res.data);
+    })
+    .catch((err) => {
+      console.log('에러발생');
+      console.log(err);
+    })
 }
 
 // 컴포넌트가 마운트될 때 데이터를 가져옴
@@ -108,6 +131,20 @@ onMounted(() => {
       lowestOption.value = options.reduce((min, option) => (option.max_intr_rate < min.max_intr_rate ? option : min), options[0]);
     }
   });
+
+  if (accountStore.userId !== 0) {
+    axios({
+      url: "http://127.0.0.1:8000/finances/user-product/",
+      method: "get",
+      params: {
+        "user_id": accountStore.userId,
+      }
+    })
+      .then((res) => {
+        console.log(res.data);
+        myProduct.value = res.data
+      })
+  }
 });
 
 function formatText(text) {
@@ -131,7 +168,8 @@ function formatMaxLimit(maxLimit) {
 </script>
 
 <style scoped>
-body, html {
+body,
+html {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -139,14 +177,22 @@ body, html {
 }
 
 .child-container {
-  max-width: 900px; /* 중앙 콘텐츠의 최대 너비 */
-  margin: 0 auto; /* 가로 방향으로 중앙 정렬 */
-  padding: 20px; /* 내부 여백 */
-  display: flex; /* 내용 정렬을 위해 flexbox 사용 */
-  flex-direction: column; /* 세로 정렬 */
-  align-items: center; /* 수평 중앙 정렬 */
-  justify-content: center; /* 수직 중앙 정렬 */
-  min-height: 100vh; /* 화면 전체 높이를 차지 */
+  max-width: 900px;
+  /* 중앙 콘텐츠의 최대 너비 */
+  margin: 0 auto;
+  /* 가로 방향으로 중앙 정렬 */
+  padding: 20px;
+  /* 내부 여백 */
+  display: flex;
+  /* 내용 정렬을 위해 flexbox 사용 */
+  flex-direction: column;
+  /* 세로 정렬 */
+  align-items: center;
+  /* 수평 중앙 정렬 */
+  justify-content: center;
+  /* 수직 중앙 정렬 */
+  min-height: 100vh;
+  /* 화면 전체 높이를 차지 */
 }
 
 .card {

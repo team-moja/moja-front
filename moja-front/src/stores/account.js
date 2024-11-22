@@ -7,8 +7,24 @@ import axios from 'axios'
 export const useAccountStore = defineStore('counter', () => {
   const router = useRouter()
   const token = ref('')
+  const userId = ref(0)
   const BASE_URL = 'http://127.0.0.1:8000/accounts'
   const isSuccess = ref(false)
+
+  const getUserId = function(token) {
+    axios({
+      url: `${BASE_URL}/dj-rest-auth/user/`,
+      method: 'get',
+      headers: { 'Authorization': `Token ${token}` }
+    })
+    .then(res => {
+      userId.value = res.data.pk
+    })
+    .catch(err => {
+      console.log('pk 불러오기 실패');
+    })
+  }
+
   const login = function(loginData) {
     axios({
         url: `${BASE_URL}/dj-rest-auth/login/`,
@@ -20,6 +36,7 @@ export const useAccountStore = defineStore('counter', () => {
     })
     .then((res) => {
       token.value = res.data.key;
+      getUserId(token.value)
       isSuccess.value = !isSuccess.value
       console.log(isSuccess.value);
     })
@@ -33,6 +50,7 @@ export const useAccountStore = defineStore('counter', () => {
   const logout = function() {
     // 로컬에서 토큰 삭제
     token.value = '';
+    userId.value = 0;
 
     // 서버에 로그아웃 요청 (선택 사항, JWT는 클라이언트에서 관리하므로 실제로 필요하지 않지만)
     axios.post(`${BASE_URL}/dj-rest-auth/logout/`)
@@ -48,5 +66,5 @@ export const useAccountStore = defineStore('counter', () => {
     // 예시: this.$router.push('/login');
   };
 
-  return {login, BASE_URL, token, logout, isSuccess}
+  return {login, BASE_URL, token, logout, isSuccess, userId}
 }, { persist: true })
