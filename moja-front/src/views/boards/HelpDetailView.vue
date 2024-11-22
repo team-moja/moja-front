@@ -1,28 +1,50 @@
 <template>
   <div class="help-container">
     <div class="help-detail">
-      <h1>{{ help?.help_title }}</h1>
-      <div class="post-info">
-        <span>작성일: {{ formatDate(help?.help_date) }}</span>
-        <div class="like-section">
-          <button
-            @click="toggleLike"
-            class="like-btn"
-            :class="{ liked: isLiked }"
-          >
-            ❤️ {{ likeCount }}
-          </button>
+      <div v-if="!editingPost">
+        <h1>{{ help?.help_title }}</h1>
+        <div class="post-info">
+          <span>작성일: {{ formatDate(help?.help_date) }}</span>
+          <div class="like-section">
+            <button
+              @click="toggleLike"
+              class="like-btn"
+              :class="{ liked: isLiked }"
+            >
+              ❤️ {{ likeCount }}
+            </button>
+          </div>
+        </div>
+        <p class="content">{{ help?.help_content }}</p>
+
+        <!-- 작성자만 보이는 수정/삭제 버튼 -->
+        <div v-if="help?.is_author" class="author-actions">
+          <button @click="startEditPost" class="btn edit-btn">수정</button>
+          <button @click="deletePost" class="btn delete-btn">삭제</button>
         </div>
       </div>
-      <p class="content">{{ help?.help_content }}</p>
 
-      <!-- 작성자만 보이는 수정/삭제 버튼 -->
-      <div v-if="help?.is_author" class="author-actions">
-        <button @click="editPost" class="btn edit-btn">수정</button>
-        <button @click="deletePost" class="btn delete-btn">삭제</button>
+      <!-- 게시글 수정 폼 -->
+      <div v-else class="edit-form">
+        <input
+          v-model="editedTitle"
+          class="edit-title"
+          type="text"
+          placeholder="제목"
+        />
+        <textarea
+          v-model="editedContent"
+          class="edit-content"
+          placeholder="내용"
+          rows="5"
+        ></textarea>
+        <div class="edit-actions">
+          <button @click="savePostEdit" class="btn save-btn">저장</button>
+          <button @click="cancelPostEdit" class="btn cancel-btn">취소</button>
+        </div>
       </div>
 
-      <!-- 댓글 -->
+      <!-- 댓글 섹션 -->
       <div v-if="isLoggedIn" class="comments-section">
         <h3>댓글</h3>
         <div class="comment-form">
@@ -38,23 +60,35 @@
 
         <div class="comments-list">
           <div v-for="comment in comments" :key="comment.id" class="comment">
-            <div class="comment-header">
-              <span class="comment-author">{{ comment.user }}</span>
-              <span class="comment-date">{{
-                formatDate(comment.help_comment_date)
-              }}</span>
+            <!-- 댓글 수정 모드가 아닐 때 -->
+            <div v-if="editingCommentId !== comment.id">
+              <div class="comment-header">
+                <span class="comment-author">{{ comment.user }}</span>
+                <span class="comment-date">
+                  {{ formatDate(comment.help_comment_date) }}
+                </span>
+              </div>
+              <p class="comment-content">{{ comment.help_comment_content }}</p>
+              <div v-if="comment.is_author" class="comment-actions">
+                <button @click="startEditComment(comment)" class="btn edit-btn-sm">수정</button>
+                <button @click="deleteComment(comment.id)" class="btn delete-btn-sm">삭제</button>
+              </div>
             </div>
-            <p class="comment-content">{{ comment.help_comment_content }}</p>
-            <!-- 댓글 작성자만 보이는 수정/삭제 버튼 -->
-            <div v-if="comment.is_author" class="comment-actions">
-              <button @click="editComment(comment)" class="btn edit-btn-sm">수정</button>
-              <button @click="deleteComment(comment.id)" class="btn delete-btn-sm">삭제</button>
+            
+            <!-- 댓글 수정 모드일 때 -->
+            <div v-else class="comment-edit-form">
+              <textarea
+                v-model="editedCommentContent"
+                rows="3"
+                class="edit-comment-textarea"
+              ></textarea>
+              <div class="edit-comment-actions">
+                <button @click="saveCommentEdit(comment.id)" class="btn save-btn-sm">저장</button>
+                <button @click="cancelCommentEdit" class="btn cancel-btn-sm">취소</button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <div v-else class="login-message">
-        <p>댓글을 작성하려면 로그인 해주세요.</p>
       </div>
 
       <router-link to="/help">
@@ -73,18 +107,115 @@ import { useAccountStore } from "@/stores/account";
 const route = useRoute();
 const router = useRouter();
 const accountStore = useAccountStore();
+
+// 기존 상태 변수들
 const help = ref(null);
 const comments = ref([]);
 const newComment = ref("");
 const isLiked = ref(false);
 const likeCount = ref(0);
 
+// 게시글 수정 관련 상태
+const editingPost = ref(false);
+const editedTitle = ref("");
+const editedContent = ref("");
+
+// 댓글 수정 관련 상태
+const editingCommentId = ref(null);
+const editedCommentContent = ref("");
+
+const isLoggedIn = computed(() => !!accountStore.token);
+
+// 게시글 수정 시작
+const startEditPost = () => {
+  editedTitle.value = help.value.help_title;
+  editedContent.value = help.value.help_content;
+  editingPost.value = true;
+};
+
+// 게시글 수정 취소
+const cancelPostEdit = () => {
+  editingPost.value = false;
+  editedTitle.value = "";
+  editedContent.value = "";
+};
+
+// 게시글 수정 저장
+const savePostEdit = async () => {
+  try {
+    const response = await axios.put(
+      `http://127.0.0.1:8000/boards/help/${route.params.id}/`,
+      {
+        help_title: editedTitle.value,
+        help_content: editedContent.value
+      },
+      {
+        headers: {
+          Authorization: `Token ${accountStore.token}`
+        }
+      }
+    );
+    help.value = response.data;
+    editingPost.value = false;
+  } catch (error) {
+    console.error("게시글 수정 실패:", error);
+    alert(error.response?.data?.error || "게시글 수정에 실패했습니다.");
+  }
+};
+
+// 댓글 수정 시작
+const startEditComment = (comment) => {
+  editingCommentId.value = comment.id;
+  editedCommentContent.value = comment.help_comment_content;
+};
+
+// 댓글 수정 취소
+const cancelCommentEdit = () => {
+  editingCommentId.value = null;
+  editedCommentContent.value = "";
+};
+
+// 댓글 수정 저장
+const saveCommentEdit = async (commentId) => {
+  try {
+    // 현재 수정 중인 댓글 찾기
+    const currentComment = comments.value.find(c => c.id === commentId);
+    
+    const response = await axios.put(
+      `http://127.0.0.1:8000/boards/help/comments/${commentId}/`,
+      {
+        help_comment_content: editedCommentContent.value,
+        help_article: help.value.id,  // 게시글 ID 추가
+        user: currentComment.user     // 사용자 ID 추가
+      },
+      {
+        headers: {
+          Authorization: `Token ${accountStore.token}`
+        }
+      }
+    );
+
+    // 수정된 댓글로 업데이트
+    const index = comments.value.findIndex(c => c.id === commentId);
+    // 기존 댓글의 속성을 보존하면서 수정된 내용 반영
+    comments.value[index] = {
+      ...comments.value[index],
+      help_comment_content: editedCommentContent.value
+    };
+    
+    // 수정 모드 종료
+    cancelCommentEdit();
+  } catch (error) {
+    console.error("댓글 수정 실패:", error);
+    alert(error.response?.data?.error || "댓글 수정에 실패했습니다.");
+  }
+};
+
 
 const formatDate = (date) => {
   if (!date) return "";
   return date.split("T")[0];
 };
-const isLoggedIn = computed(() => !!accountStore.token);
 const isAuthor = ref(false);
 const isCommentAuthor = (comment) => comment.user_id === accountStore.userId;
 
@@ -166,6 +297,7 @@ const submitComment = async () => {
       { help_comment_content: newComment.value },
       { headers: { Authorization: `Token ${useAccountStore().token}` } }
     );
+
     comments.value.unshift(response.data);
     newComment.value = "";
   } catch (error) {
@@ -386,11 +518,71 @@ const toggleLike = async () => {
 }
 
 .btn {
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: all 0.3s ease;
 }
 
 .btn:hover {
   opacity: 0.9;
 }
+
+.edit-form {
+  margin: 1rem 0;
+}
+
+.edit-title {
+  width: 100%;
+  padding: 0.5rem;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-content {
+  width: 100%;
+  padding: 0.5rem;
+  min-height: 200px;
+  margin-bottom: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.save-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cancel-btn {
+  background-color: #666;
+  color: white;
+}
+
+.save-btn-sm, .cancel-btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.edit-comment-textarea {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.edit-comment-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
 </style>
