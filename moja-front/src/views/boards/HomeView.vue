@@ -178,29 +178,6 @@ onMounted(async () => {
 });
 
 
-// HOT 게시글 데이터
-// const hotPosts = ref([
-//   {
-//     id: 1,
-//     badge: "📈 TODAY 모자",
-//     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
-//     likes: 20,
-//   },
-//   {
-//     id: 2,
-//     badge: "👑 주간 모자",
-//     content: "광주은행 n년차 행원이 추천해주는 생활비 절약 tip 3가지",
-//     likes: 20,
-//   },
-//   {
-//     id: 3,
-//     badge: "👑 월간 모자",
-//     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
-//     likes: 20,
-//   }
-// ]);
-
-
 const startRecommendation = () => {
   // 추천 시작 로직
   console.log('추천 시작');
