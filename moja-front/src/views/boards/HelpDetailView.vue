@@ -54,6 +54,7 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "axios";
+import { useAccountStore } from "@/stores/account";
 
 const route = useRoute();
 const help = ref(null);
@@ -61,7 +62,7 @@ const comments = ref([]);
 const newComment = ref("");
 const isLiked = ref(false);
 const likeCount = ref(0);
-const TOKEN = "ef0011f73b048ba1ff73644cdcabfdc7dbec8fe0";
+
 
 const formatDate = (date) => {
   if (!date) return "";
@@ -75,7 +76,7 @@ onMounted(async () => {
       `http://127.0.0.1:8000/boards/help/${route.params.id}/`,
       {
         headers: {
-          Authorization: `Token ${TOKEN}`,
+          Authorization: `Token ${useAccountStore().token}`,
         },
       }
     );
@@ -98,7 +99,7 @@ const loadComments = async () => {
       `http://127.0.0.1:8000/boards/help/${route.params.id}/comments/`,
       {
         headers: {
-          Authorization: `Token ${TOKEN}`,
+          Authorization: `Token ${useAccountStore().token}`,
         },
       }
     );
@@ -115,7 +116,7 @@ const submitComment = async () => {
     const response = await axios.post(
       `http://127.0.0.1:8000/boards/help/${route.params.id}/comments/`,
       { help_comment_content: newComment.value },
-      { headers: { Authorization: `Token ${TOKEN}` } }
+      { headers: { Authorization: `Token ${useAccountStore().token}` } }
     );
     comments.value.unshift(response.data);
     newComment.value = "";
@@ -131,7 +132,7 @@ const toggleLike = async () => {
       {},
       {
         headers: {
-          Authorization: `Token ${TOKEN}`,
+          Authorization: `Token ${useAccountStore().token}`,
         },
       }
     );

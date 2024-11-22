@@ -46,21 +46,20 @@
 import axios from "axios";
 import { ref } from "vue";
 import { defineStore } from "pinia";
+import { useAccountStore } from "./account";
 
 export const useHelpStore = defineStore(
   "help",
   () => {
     const helps = ref([]);
     const API_URL = "http://127.0.0.1:8000/boards/help";
-    // 토큰 설정
-    const TOKEN = "ef0011f73b048ba1ff73644cdcabfdc7dbec8fe0";
 
     // 질문 게시글 리스트 가져오기
     const getHelps = async () => {
       try {
         const response = await axios.get(`${API_URL}/`, {
           headers: {
-            Authorization: `Token ${TOKEN}`,
+            Authorization: `Token ${useAccountStore().token}`,
           },
         });
         console.log(response.data);
@@ -72,10 +71,10 @@ export const useHelpStore = defineStore(
 
     // 질문 게시글 생성
     const createHelp = async (helpData) => {
-      try {        
+      try {      
         const response = await axios.post(`${API_URL}/`, helpData, {
           headers: {
-            Authorization: `Token ${TOKEN}`,
+            Authorization: `Token ${useAccountStore().token}`,
             "Content-Type": "application/json",
           },
         });
@@ -91,3 +90,4 @@ export const useHelpStore = defineStore(
   },
   { persist: true }
 );
+
