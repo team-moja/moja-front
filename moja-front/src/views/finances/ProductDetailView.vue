@@ -78,6 +78,7 @@ import { ref, computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAccountStore } from '@/stores/account';
+import MapTest from '@/components/MapTest.vue';
 
 const route = useRoute();
 const productId = route.params.id;
