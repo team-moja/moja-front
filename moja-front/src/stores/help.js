@@ -1,47 +1,56 @@
-// import axios from 'axios'
-// import { ref } from 'vue'
-// import { defineStore } from 'pinia'
+// import axios from "axios";
+// import { ref } from "vue";
+// import { defineStore } from "pinia";
+// import { useAccountStore } from "./account";
 
-// export const useHelpStore = defineStore('help', () => {
-//   const helps = ref([])
-//   const API_URL = 'http://127.0.0.1:8000/boards'
+// export const useHelpStore = defineStore(
+//   "help",
+//   () => {
+//     const helps = ref([]);
+//     const API_URL = "http://127.0.0.1:8000/boards/help";
 
-//   const getHelps = async () => {
-//     try {
-//       const token = localStorage.getItem('token')  // 저장된 토큰 가져오기
-//       const response = await axios.get(`${API_URL}/help/`, {
-//         headers: {
-//           Authorization: `Token ${token}`  // 토큰을 헤더에 추가
-//         }
-//       })
-//       helps.value = response.data
-//     } catch (error) {
-//       console.error('질문 리스트 로드 실패:', error)
-//     }
-//   }
-
-//   const createHelp = async (helpData) => {
-//     try {
-//       const token = localStorage.getItem('token')  // 저장된 토큰 가져오기
-//       const response = await axios.post(
-//         `${API_URL}/help/`,
-//         helpData,
-//         {
+//     // 질문 게시글 리스트 가져오기
+//     const getHelps = async () => {
+//       try {
+//         const response = await axios.get(`${API_URL}/`, {
 //           headers: {
-//             Authorization: `Token ${token}`  // 토큰을 헤더에 추가
-//           }
-//         }
-//       )
-//       helps.value.unshift(response.data)
-//       return response.data
-//     } catch (error) {
-//       console.error('질문 생성 실패:', error.response)
-//       throw error
-//     }
-//   }
+//             Authorization: `Token ${useAccountStore().token}`,
+//           },
+//         });
+//         console.log(response.data);
+//         helps.value = response.data;
+//       } catch (error) {
+//         console.error("질문 리스트 로드 실패:", error);
+//       }
+//     };
 
-//   return { helps, getHelps, createHelp }
-// })
+//     // 질문 게시글 생성
+//     const createHelp = async (helpData) => {
+//       try {      
+//         const response = await axios.post(`${API_URL}/`, helpData, {
+//           headers: {
+//             Authorization: `Token ${useAccountStore().token}`,
+//             "Content-Type": "application/json",
+//           },
+//         });
+//         helps.value.unshift(response.data);
+//         return response.data;
+//       } catch (error) {
+//         console.error("질문 생성 실패:", error.response);
+//         throw error;
+//       }
+//     };
+
+//     // 메인 페이지
+//     state: () => ({
+//       helps: [],
+//       hotHelps: []
+//     })
+
+//     return { helps, getHelps, createHelp };
+//   },
+//   { persist: true }
+// );
 
 import axios from "axios";
 import { ref } from "vue";
@@ -49,15 +58,19 @@ import { defineStore } from "pinia";
 import { useAccountStore } from "./account";
 
 export const useHelpStore = defineStore(
-  "help",
+"help",
   () => {
+    // 상태 정의
     const helps = ref([]);
-    const API_URL = "http://127.0.0.1:8000/boards/help";
+    const hotHelps = ref([]); // 이 부분이 빠져있었습니다
 
+    const API_URL = "http://127.0.0.1:8000/boards";
+    const HELP_URL = `${API_URL}/help`;
+    
     // 질문 게시글 리스트 가져오기
     const getHelps = async () => {
       try {
-        const response = await axios.get(`${API_URL}/`, {
+        const response = await axios.get(`${HELP_URL}/`, {
           headers: {
             Authorization: `Token ${useAccountStore().token}`,
           },
@@ -65,14 +78,29 @@ export const useHelpStore = defineStore(
         console.log(response.data);
         helps.value = response.data;
       } catch (error) {
-        console.error("질문 리스트 로드 실패:", error);
+        console.error("질문게시글 리스트 로드 실패:", error);
       }
     };
-
+    
+    // HOT 게시글 가져오기
+    const getHotHelps = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/hot-articles/`, {
+          headers: {
+            Authorization: `Token ${useAccountStore().token}`,
+          },
+        });
+        console.log('Hot articles:', response.data);
+        hotHelps.value = response.data;
+      } catch (error) {
+        console.error("인기 게시글 로드 실패:", error);
+      }
+    };
+    
     // 질문 게시글 생성
     const createHelp = async (helpData) => {
       try {      
-        const response = await axios.post(`${API_URL}/`, helpData, {
+        const response = await axios.post(`${HELP_URL}/`, helpData, {
           headers: {
             Authorization: `Token ${useAccountStore().token}`,
             "Content-Type": "application/json",
@@ -86,8 +114,14 @@ export const useHelpStore = defineStore(
       }
     };
 
-    return { helps, getHelps, createHelp };
+    // state와 actions를 함께 반환
+    return { 
+      helps, 
+      hotHelps,
+      getHelps, 
+      getHotHelps,
+      createHelp 
+    };
   },
   { persist: true }
 );
-
