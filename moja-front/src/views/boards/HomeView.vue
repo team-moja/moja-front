@@ -24,13 +24,14 @@
         <div class="hot-posts-section">
           <h2 class="section-title">🔥 HOT 게시글</h2>
           <div class="post-list">
-            <div class="post-item" v-for="post in hotPosts" :key="post.id">
+            <div class="post-item" v-for="post in hotHelps" :key="post.id"
+            @click="goToDetail(post.id)" style="cursor: pointer">
               <div class="post-content">
-                <span class="post-badge">{{ post.badge }}</span>
-                <p class="post-text">{{ post.content }}</p>
+                <span class="post-badge">인기 게시글!!</span>
+                <p class="post-text">{{ post.help_title }}</p>
               </div>
               <div class="post-stats">
-                <span>❤️ {{ post.likes }}</span>
+                <span>❤️ {{ post.likes_count }}</span>
               </div>
             </div>
           </div>
@@ -125,9 +126,12 @@
 
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { useHelpStore } from '@/stores/help';
 import MoneyChangeView from '../exchange/MoneyChangeView.vue';
 import MapTest from '@/components/MapTest.vue';
+
 const isModalOpen = ref(false);
 const isExchange = ref(false)
 const isMap = ref(false)
@@ -157,26 +161,45 @@ const openMap = function () {
 }
 
 // HOT 게시글 데이터
-const hotPosts = ref([
-  {
-    id: 1,
-    badge: "📈 TODAY 모자",
-    content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
-    likes: 20,
-  },
-  {
-    id: 2,
-    badge: "👑 주간 모자",
-    content: "광주은행 n년차 행원이 추천해주는 생활비 절약 tip 3가지",
-    likes: 20,
-  },
-  {
-    id: 3,
-    badge: "👑 월간 모자",
-    content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
-    likes: 20,
-  }
-]);
+const router = useRouter();
+const store = useHelpStore();
+const hotHelps = computed(() => store.hotHelps);
+
+// 게시글 상세 페이지로 이동하는 함수
+const goToDetail = (id) => {
+  router.push({ 
+    name: 'help-detail',
+    params: { id: id }
+  });
+};
+
+onMounted(async () => {
+  await store.getHotHelps();
+});
+
+
+// HOT 게시글 데이터
+// const hotPosts = ref([
+//   {
+//     id: 1,
+//     badge: "📈 TODAY 모자",
+//     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
+//     likes: 20,
+//   },
+//   {
+//     id: 2,
+//     badge: "👑 주간 모자",
+//     content: "광주은행 n년차 행원이 추천해주는 생활비 절약 tip 3가지",
+//     likes: 20,
+//   },
+//   {
+//     id: 3,
+//     badge: "👑 월간 모자",
+//     content: "내가 진짜 좋은 카드 추천해줘요. 이걸로 5천원 캐시백 받음 ...",
+//     likes: 20,
+//   }
+// ]);
+
 
 const startRecommendation = () => {
   // 추천 시작 로직
@@ -298,6 +321,19 @@ const startRecommendation = () => {
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
+  transition: all 0.2s ease;
+}
+
+.post-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.post-text {
+  /* 긴 제목*/
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .post-content {
