@@ -114,7 +114,6 @@ export const useHelpStore = defineStore(
       }
     };
 
-    // state와 actions를 함께 반환
     return { 
       helps, 
       hotHelps,

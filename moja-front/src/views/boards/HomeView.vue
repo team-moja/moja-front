@@ -622,9 +622,7 @@ const startRecommendation = () => {
     box-sizing: border-box;
     text-align: center;
   }
-}
 
-@media (max-width: 480px) {
   .button-text-long {
     display: none;
   }
