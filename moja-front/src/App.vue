@@ -93,4 +93,11 @@ body {
   font-family: Arial, sans-serif;
   background-color: #f9f9f9;
 }
+.main-content {
+  flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
 </style>
