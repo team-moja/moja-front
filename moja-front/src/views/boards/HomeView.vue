@@ -317,7 +317,7 @@ const startRecommendation = () => {
 }
 
 .post-item {
-  background: #FFFFFF;
+  background: #F8F9FA;
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
