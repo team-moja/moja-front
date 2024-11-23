@@ -2,6 +2,15 @@
 <template>
   <div class="my-page-container">
     <div class="profile-section">
+
+      <!-- 프로필 이미지 -->
+      <div class="profile-image-section">
+        <div class="profile-image-container">
+          <img src="/cap-image.png" alt="모자" class="cap-image">
+          <img :src="profileImage" alt="프로필 이미지" class="profile-image">
+        </div>
+      </div>
+
       <div class="profile-header">
         <h1>회원 정보</h1>
         <button 
@@ -301,6 +310,9 @@ const handleSubmit = async () => {
   }
 }
 
+// 기본 프로필 이미지 경로
+const profileImage = ref('/default-profile.png')
+
 onMounted(() => {
   fetchUserInfo()
 })
@@ -328,7 +340,7 @@ onMounted(() => {
 }
 
 .my-page-container {
-  max-width: 800px;
+  max-width: 1000px;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -423,5 +435,38 @@ onMounted(() => {
 
 .cancel-button:hover {
   background-color: #f5f5f5;
+}
+
+/* 프로필 이미지 관련 스타일 추가 */
+.profile-image-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.profile-image-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.profile-image {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #40A2E3;
+  position: relative;
+  z-index: 1;
+}
+
+.cap-image {
+  position: absolute;
+  top: -70px; /* 모자 위치 조정 */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 160px; /* 모자 크기 조정 */
+  height: auto;
+  z-index: 2;
 }
 </style>
