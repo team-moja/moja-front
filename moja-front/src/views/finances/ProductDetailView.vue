@@ -4,16 +4,13 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-body">
         <div class="row align-items-center">
-          <!-- 은행 로고 -->
           <div class="col-auto">
             <img :src="`/src/assets/images/banks/${product.bank.bank_name}.png`" alt="은행 로고" class="rounded-circle" />
           </div>
-          <!-- 상품명 및 은행명 -->
           <div class="col">
             <h5 class="mb-0">{{ product.prdt_name }}</h5>
             <small class="text-muted">{{ product.bank.bank_name }}</small>
           </div>
-          <!-- 최고 금리 -->
           <div class="col-auto text-start">
             <div class="d-flex flex-column align-items-start">
               <p>🔼 최고 금리: {{ highestOption.max_intr_rate }}% (기간: {{ highestOption.save_trm }}개월)</p>
@@ -33,7 +30,6 @@
             <p>🏦 <b>가입방법</b>: {{ product.join_way }}</p>
           </div>
         </div>
-        <!-- 7. 버튼 정렬: 공간 나누기 (equal spacing) -->
         <div class="d-flex justify-content-between mt-3">
           <a :href="product.bank.bank_url" class="btn btn-outline-secondary flex-grow-1 me-1">은행사 바로가기</a>
           <button class="btn btn-outline-secondary flex-grow-1 ms-1" @click="toggleModal">지점 검색하기</button>
@@ -41,6 +37,7 @@
       </div>
     </div>
 
+    <!-- 모달 -->
     <div v-if="isModalOpen" class="modal-backdrop">
       <div class="modal-content">
         <div class="modal-header">
@@ -56,7 +53,7 @@
     </div>
 
     <!-- 추가정보 섹션 -->
-    <div class="card p-4 border-dashed">
+    <div v-if="isLoaded" class="card p-4 border-dashed">
       <div class="row">
         <div class="col-12">
           <h5>💱 만기 후 이자율 조건</h5>
@@ -67,14 +64,28 @@
           <p>{{ product.etc_note }}</p>
         </div>
       </div>
-      <button class="btn custom-button text-white" @click="saveUserProduct(product.id)" v-show="!isHave">내 상품 등록하기</button>
-      <button class="btn btn-danger text-white" @click="deleteUserProduct(product.id)" v-show="isHave">내 상품 삭제하기</button>
+      <!-- 버튼 -->
+        <button
+          class="btn custom-button text-white"
+          v-if="!isProductSaved"
+          @click="saveUserProduct(product.id)"
+        >
+          내 상품 등록하기
+        </button>
+        <button
+          class="btn btn-danger text-white"
+          v-if="isProductSaved"
+          @click="deleteUserProduct(product.id)"
+        >
+          내 상품 삭제하기
+        </button>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import axios from 'axios';
 import { useAccountStore } from '@/stores/account';
@@ -87,95 +98,75 @@ const accountStore = useAccountStore();
 const product = ref({});
 const highestOption = ref({});
 const lowestOption = ref({});
-
-const isModalOpen = ref(false);
-const isHave = ref(); // 기본값 수정 (등록 여부는 데이터에 따라 결정됨)
-
 const myProduct = ref([]); // 유저가 등록한 상품 리스트
+const isLoaded = ref(false); // 데이터 로딩 완료 여부
+const isModalOpen = ref(false); // 모달 상태
 
-const toggleModal = function () {
+// 현재 상품이 등록된 상태인지 계산
+const isProductSaved = computed(() => {
+  if (!product.value.id || !myProduct.value.length) return false;
+  return myProduct.value.some((item) => item.product.id === product.value.id);
+});
+
+const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
 };
 
-const deleteUserProduct = function (productId) {
-  axios({
-    url: "http://127.0.0.1:8000/finances/user-product/",
-    method: "delete",
-    data: {
-      "product_id": productId,
-    },
-  })
-    .then((res) => {
-      window.alert("삭제 성공");
-      console.log(res.data);
-
-      // 삭제 후 상품 목록 갱신
-      myProduct.value = myProduct.value.filter((item) => item.product.id !== productId);
-      isHave.value = !myProduct.value.some((item) => item.product.id === product.id); // 상태 업데이트
-    })
-    .catch((err) => {
-      console.error('에러 발생', err);
+const saveUserProduct = async (productId) => {
+  try {
+    await axios.post("http://127.0.0.1:8000/finances/user-product/", {
+      user_id: accountStore.userId,
+      product_id: productId,
     });
+    // 새로 등록된 상품 추가
+    myProduct.value.push({ product: { id: productId } });
+    alert("등록 성공");
+  } catch (error) {
+    console.error("등록 중 에러 발생:", error);
+  }
 };
 
-const saveUserProduct = function (productId) {
-  axios({
-    url: "http://127.0.0.1:8000/finances/user-product/",
-    method: "post",
-    data: {
-      "user_id": accountStore.userId,
-      "product_id": productId,
-    },
-  })
-    .then((res) => {
-      window.alert("등록 성공");
-      console.log(res.data);
-
-      // 등록 후 상품 목록 갱신
-      myProduct.value.push(res.data); // 새로 등록된 상품 추가
-      isHave.value = true; // 등록 상태로 변경
-    })
-    .catch((err) => {
-      console.error('에러 발생', err);
+const deleteUserProduct = async (productId) => {
+  try {
+    await axios.delete("http://127.0.0.1:8000/finances/user-product/", {
+      data: { product_id: productId },
     });
+    // 상품 목록 갱신
+    myProduct.value = myProduct.value.filter((item) => item.product.id !== productId);
+    alert("삭제 성공");
+  } catch (error) {
+    console.error("삭제 중 에러 발생:", error);
+  }
 };
 
-// 초기 데이터 로드
-onMounted(() => {
-  // 상품 상세 정보 로드
-  axios({
-    url: `http://127.0.0.1:8000/finances/product/detail/${productId}`,
-    method: 'get',
-  }).then((res) => {
-    product.value = res.data;
+onMounted(async () => {
+  try {
+    // 상품 상세 정보 로드
+    const productRes = await axios.get(`http://127.0.0.1:8000/finances/product/detail/${productId}`);
+    product.value = productRes.data;
 
-    if (product.value.product_options && product.value.product_options.length > 0) {
+    if (product.value.product_options?.length > 0) {
       const options = product.value.product_options;
-      highestOption.value = options.reduce((max, option) => (option.max_intr_rate > max.max_intr_rate ? option : max), options[0]);
-      lowestOption.value = options.reduce((min, option) => (option.max_intr_rate < min.max_intr_rate ? option : min), options[0]);
+      highestOption.value = options.reduce((max, opt) => (opt.max_intr_rate > max.max_intr_rate ? opt : max), options[0]);
+      lowestOption.value = options.reduce((min, opt) => (opt.max_intr_rate < min.max_intr_rate ? opt : min), options[0]);
     }
-  });
 
-  // 유저가 등록한 상품 리스트 로드
-  if (accountStore.userId !== 0) {
-    axios({
-      url: "http://127.0.0.1:8000/finances/user-product/",
-      method: "get",
-      params: {
-        "user_id": accountStore.userId,
-      },
-    }).then((res) => {
-      console.log(res.data);
-      myProduct.value = res.data;
+    // 유저가 등록한 상품 리스트 로드
+    if (accountStore.userId) {
+      const userProductRes = await axios.get("http://127.0.0.1:8000/finances/user-product/", {
+        params: { user_id: accountStore.userId },
+      });
+      myProduct.value = userProductRes.data;
+    }
 
-      // 현재 상품이 등록된 상태인지 확인
-      isHave.value = myProduct.value.some((item) => item.product.id === productId);
-    });
+    isLoaded.value = true;
+  } catch (error) {
+    console.error("데이터 로드 중 에러 발생:", error);
   }
 });
 
 function formatText(text) {
-  if (!text) return ""; 
+  if (!text) return "";
   return text.replace(/\n/g, "<br>");
 }
 
@@ -188,9 +179,11 @@ function formatMaxLimit(maxLimit) {
   } else if (maxLimit >= 10000) {
     return `${Math.floor(maxLimit / 10000)}만원`;
   }
-  return `${maxLimit}원`; 
+  return `${maxLimit}원`;
 }
+
 </script>
+
 
 <style scoped>
 body,
@@ -327,4 +320,5 @@ p {
 .modal-footer {
   text-align: right;
 }
+
 </style>
