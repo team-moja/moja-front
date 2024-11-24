@@ -208,7 +208,11 @@
                   <p>
                     <span class="label">최대 가입금액:</span>
                     <span class="value">
-                      {{ item.product.max_limit === null ? '제한 없음' : formatMaxLimit(item.product.max_limit) }}
+                      {{
+                        item.product.max_limit === null
+                          ? "제한 없음"
+                          : formatMaxLimit(item.product.max_limit)
+                      }}
                     </span>
                   </p>
                 </div>
@@ -235,6 +239,50 @@
           </div>
         </div>
       </div>
+      <!-- 금리 비교 섹션 -->
+      <div v-if="hasProducts" class="rate-comparison-section">
+        <h2 class="section-title">금리 비교</h2>
+        <div class="rates-container">
+          <div v-for="item in userProducts" :key="item.id" class="rate-item">
+            <div class="rate-header">
+              <span class="product-title">{{ item.product.prdt_name }}</span>
+              <span class="bank-name">{{ item.product.bank?.bank_name }}</span>
+            </div>
+            <div class="rate-bars">
+              <div class="bar-container">
+                <div
+                  class="rate-bar highest"
+                  :style="{
+                    height: `${
+                      getHighestRate(item.product.product_options) * 20
+                    }px`,
+                  }"
+                >
+                  <span class="rate-value"
+                    >{{ getHighestRate(item.product.product_options) }}%</span
+                  >
+                </div>
+                <div
+                  class="rate-bar lowest"
+                  :style="{
+                    height: `${
+                      getLowestRate(item.product.product_options) * 20
+                    }px`,
+                  }"
+                >
+                  <span class="rate-value"
+                    >{{ getLowestRate(item.product.product_options) }}%</span
+                  >
+                </div>
+              </div>
+            </div>
+            <div class="rate-legend">
+              <span class="highest">최고금리</span>
+              <span class="lowest">최저금리</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -244,12 +292,19 @@ import { ref, computed, onMounted } from "vue";
 import { useAccountStore } from "@/stores/account";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import RateChart from "@/components/RateChart.vue";
 
 const accountStore = useAccountStore();
 const isEditing = ref(false);
 const userInfo = ref({});
 const userProducts = ref([]);
 const router = useRouter();
+
+// 최저 금리 계산 함수 추가
+const getLowestRate = (options) => {
+  if (!options || !options.length) return 0;
+  return Math.min(...options.map((opt) => opt.max_intr_rate)).toFixed(2);
+};
 
 const banks = ref([
   {
@@ -867,5 +922,101 @@ onMounted(async () => {
 
 .button-group .btn {
   flex: 1;
+}
+
+.rate-comparison-section {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rates-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  margin-top: 1rem;
+}
+
+.rate-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.rate-header {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.product-title {
+  display: block;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.bank-name {
+  display: block;
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.rate-bars {
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 1rem 0;
+}
+
+.bar-container {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.rate-bar {
+  width: 40px;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+}
+
+.rate-bar.highest {
+  background-color: #40a2e3;
+}
+
+.rate-bar.lowest {
+  background-color: #93c6e7;
+}
+
+.rate-value {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.rate-legend {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+}
+
+.rate-legend .highest {
+  color: #40a2e3;
+}
+
+.rate-legend .lowest {
+  color: #93c6e7;
 }
 </style>
