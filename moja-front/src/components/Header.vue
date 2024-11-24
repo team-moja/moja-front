@@ -111,6 +111,7 @@ import axios from 'axios';
 import Login from '@/components/Login.vue'
 const accountStore = useAccountStore()
 const isModalOpen = ref(false)
+import Swal from 'sweetalert2';
 
 const toggleModal = function () {
   accountStore.isSuccess = !accountStore.isSuccess
@@ -123,12 +124,26 @@ const moveToSignIn = function () {
   router.push('/account/signin')
 }
 
+
 const logout = function () {
   axios({
     url: `http://127.0.0.1:8000/accounts/dj-rest-auth/logout/`,
     method: 'post'
   })
+
+  Swal.fire({
+        title: '로그아웃',
+        text: '😊 다음에 또 오세요!! 😊',
+        icon: 'success', // success, error, warning, info
+        confirmButtonText: '확인',
+      timer: 1500,
+        customClass: {
+          confirmButton: 'custom-success-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
+
   accountStore.token = ''
+  accountStore.userId = 0
 }
 
 </script>
@@ -206,5 +221,37 @@ const logout = function () {
   .d-lg-none {
     display: inline !important;
   }
+}
+
+
+.custom-popup {
+  border-radius: 15px;
+  background-color: #f5f5f5;
+}
+.custom-warning-button {
+  background-color: #dd7979 !important; /* 버튼 배경색 */
+  color: white !important;              /* 버튼 텍스트 색상 */
+  border: none !important;              /* 버튼 테두리 제거 */
+  padding: 10px 20px !important;        /* 버튼 크기 조정 */
+  border-radius: 5px !important;        /* 버튼 모서리 둥글게 */
+}
+
+.custom-warning-button:hover {
+  background-color: #dd7979 !important; /* 버튼 배경색 */
+}
+.custom-popup {
+  border-radius: 15px;
+  background-color: #f5f5f5;
+}
+.custom-success-button {
+  background-color: #aee996 !important; /* 버튼 배경색 */
+  color: rgba(0, 0, 0, 0.705) !important;              /* 버튼 텍스트 색상 */
+  border: none !important;              /* 버튼 테두리 제거 */
+  padding: 10px 20px !important;        /* 버튼 크기 조정 */
+  border-radius: 5px !important;        /* 버튼 모서리 둥글게 */
+}
+
+.custom-success-button:hover {
+  background-color: #aee996 !important; /* 버튼 배경색 */
 }
 </style>

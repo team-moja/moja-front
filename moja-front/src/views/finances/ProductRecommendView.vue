@@ -4,7 +4,7 @@
     <p>혜택이 모자라~~</p>
 
     <!-- 상품 선택 -->
-    <div class="select-container">
+    <div class="select-container mb-5">
       <label for="product-type">상품 선택</label>
       <select id="product-type" v-model="productType">
         <option value="예금">예금</option>
@@ -13,7 +13,7 @@
     </div>
 
     <!-- 월 저축액 슬라이더 -->
-    <div class="slider-container">
+    <div class="slider-container mb-5">
       <label for="monthly-saving">월 저축액</label>
       <div class="slider">
         <input
@@ -29,7 +29,7 @@
     </div>
 
     <!-- 저축기간 슬라이더 -->
-    <div class="slider-container">
+    <div class="slider-container mb-5">
       <label for="saving-period">저축기간</label>
       <div class="slider">
         <input
@@ -44,15 +44,16 @@
       </div>
     </div>
 
-    <button class="custom-button" @click="sendRecommend">추천</button>
+    <button class="custom-button mb-5" @click="sendRecommend">추천</button>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { useFinanceStore } from "@/stores/finance";
+import Swal from 'sweetalert2';
 
-const productType = ref("savings"); // 기본값: 적금
+const productType = ref("예금"); // 기본값: 적금
 const monthlySaving = ref(125000);
 const savingPeriod = ref(6);
 
@@ -60,6 +61,18 @@ function formatCurrency(value) {
   return value.toLocaleString();
 }
 
+
+Swal.fire({
+      title: '설명',
+      text: '간단한 과정으로 최적의 상품을 추천 받을 수 있어요!',
+      icon: 'info', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-info-button', // 버튼에 커스텀 클래스 추가
+      },
+      timer: 1500, // 1초 후에 자동으로 닫힘
+  // showConfirmButton: false, // 확인 버튼 숨기기
+    })
 
 const sendRecommend = function () {
   const financeStore = useFinanceStore()

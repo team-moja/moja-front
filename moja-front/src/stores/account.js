@@ -2,6 +2,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import {useRouter} from 'vue-router'
 import axios from 'axios'
+import Swal from 'sweetalert2';
 
 
 export const useAccountStore = defineStore('counter', () => {
@@ -38,11 +39,29 @@ export const useAccountStore = defineStore('counter', () => {
       token.value = res.data.key;
       getUserId(token.value)
       isSuccess.value = !isSuccess.value
+      Swal.fire({
+        title: '로그인 성공',
+        text: '😀 저희 서비스를 즐겨보세요 😀',
+        icon: 'success', // success, error, warning, info
+        confirmButtonText: '확인',
+        timer: 1500,
+        customClass: {
+          confirmButton: 'custom-success-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
       console.log(isSuccess.value);
     })
     .catch((err) => {
-      // console.error(err);
-      window.alert('로그인이 실패했습니다!')
+      Swal.fire({
+        title: '로그인 실패',
+        text: '😖 아이디 비밀번호를 다시 확인해주세요 😖',
+        icon: 'error', // success, error, warning, info
+        confirmButtonText: '확인',
+        timer: 1500,
+        customClass: {
+          confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
       isSuccess.value = true; // 로그인 실패 시 false
     });
   }

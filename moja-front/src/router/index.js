@@ -13,6 +13,7 @@ import BankMapView from '@/views/map/BankMapView.vue'
 import HomeView from '@/views/boards/HomeView.vue'
 import CommunityView from '@/views/boards/CommunityView.vue'
 import MyProfile from '@/views/accounts/MyProfile.vue'  // 마이페이지 프로필
+import { useAccountStore } from '@/stores/account'
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -30,12 +31,14 @@ const router = createRouter({
       path: '/help/create',
       name: 'help-create',
       component: HelpCreateView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/help/:id',
       name: 'help-detail',
       component: HelpDetailView,
       props: true,
+      meta: { requiresAuth: true }
     },
 
     {
@@ -54,11 +57,13 @@ const router = createRouter({
       path: '/product/:id',
       name: 'productDetail',
       component: ProductDetailView,
+      meta: { requiresAuth: true }
     },
     {
       path: '/product/recommend',
       name: 'productRecommend',
       component: ProductRecommendView,
+      meta: { requiresAuth: true }
     },
     {
       path: "/product/comparison",
@@ -89,9 +94,32 @@ const router = createRouter({
       path: '/profile',
       name: 'profile',
       component: MyProfile,
-      // meta: { requiresAuth: true }
+      meta: { requiresAuth: true }
     },
   ],
+})
+
+import Swal from 'sweetalert2';
+
+router.beforeEach((to, from, next) => {
+  const accountStore = useAccountStore()
+  const isAuthenticated = accountStore.token !== '' // 로그인 여부 확인
+
+  if (to.meta.requiresAuth && !isAuthenticated) {
+    // 인증이 필요한 페이지에 접근하려고 하지만 로그인되지 않은 경우
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 해주세요 😥',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+      },
+    });
+    return next('/') // 로그인 페이지로 리다이렉트
+  }
+
+  next() // 다음 페이지로 이동
 })
 
 export default router

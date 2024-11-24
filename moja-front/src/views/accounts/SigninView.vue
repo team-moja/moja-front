@@ -3,11 +3,14 @@
   <div class="signup-container">
     <h1 class="title">회원가입</h1>
     <form @submit.prevent="signin" class="signup-form">
-      <!-- 기존 입력 필드 -->
+      <!-- 아이디 -->
       <div class="form-group">
         <label>아이디</label>
         <input type="text" v-model="username" placeholder="아이디를 입력하세요" required />
+        <small v-if="usernameError" class="text-danger">{{ usernameError }}</small>
       </div>
+
+      <!-- 비밀번호 -->
       <div class="form-group">
         <label>비밀번호</label>
         <input
@@ -16,33 +19,49 @@
           placeholder="영문, 숫자, 특수문자를 혼합하여 8자리 이상 입력해주세요."
           required
         />
+        <small v-if="passwordError" class="text-danger">{{ passwordError }}</small>
       </div>
+
+      <!-- 비밀번호 확인 -->
       <div class="form-group">
         <label>비밀번호 확인</label>
         <input type="password" v-model="password2" placeholder="비밀번호를 다시 입력하세요" required />
+        <small v-if="passwordMatchError" class="text-danger">{{ passwordMatchError }}</small>
       </div>
+
+      <!-- 이메일 -->
       <div class="form-group">
         <label>이메일</label>
         <input type="email" v-model="email" placeholder="example@gmail.com" required />
+        <small v-if="emailError" class="text-danger">{{ emailError }}</small>
       </div>
+
+      <!-- 닉네임 -->
       <div class="form-group">
         <label>닉네임</label>
         <input type="text" v-model="nickname" placeholder="부적절한 닉네임은 사용할 수 없습니다" required />
+        <small v-if="nicknameError" class="text-danger">{{ nicknameError }}</small>
       </div>
+
+      <!-- 생년월일 -->
       <div class="form-group">
         <label>생년월일</label>
         <input type="date" v-model="birthdate" required />
       </div>
+
+      <!-- 월 소득액 -->
       <div class="form-group">
         <label>월 소득액: <strong>{{ monthlyIncome }}원</strong></label>
         <input type="range" v-model="monthlyIncome" min="0" max="10000000" step="100000" class="slider" />
       </div>
+
+      <!-- 월 지출액 -->
       <div class="form-group">
         <label>월 지출액: <strong>{{ monthlyExpenses }}원</strong></label>
         <input type="range" v-model="monthlyExpenses" min="0" max="10000000" step="100000" class="slider" />
       </div>
 
-      <!-- 은행 선택 섹션 -->
+      <!-- 은행 선택 -->
       <div class="bank-filter form-group">
         <label>은행 선택</label>
         <div class="bank-slider">
@@ -60,6 +79,7 @@
         <small v-if="selectedBank" class="text-success">선택된 은행: {{ selectedBankName }}</small>
       </div>
 
+      <!-- 회원가입 버튼 -->
       <button type="submit" class="submit-button">회원가입</button>
     </form>
   </div>
@@ -72,6 +92,7 @@ import { ref, computed, onMounted } from "vue";
 import { useAccountStore } from "@/stores/account";
 import { useRouter } from "vue-router";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 const store = useAccountStore();
 const router = useRouter();
@@ -84,6 +105,7 @@ const nickname = ref("");
 const birthdate = ref("");
 const monthlyIncome = ref(2000000);
 const monthlyExpenses = ref(100000);
+const selectedBank = ref(null);
 
 const banks = ref([
   {
@@ -183,7 +205,47 @@ const banks = ref([
   },
 
 ]); // 은행 리스트
-const selectedBank = ref(null); // 선택된 은행 ID
+const usernameError = computed(() => {
+  if (!username.value) return "아이디를 입력해주세요.";
+  if (username.value.length < 8 || !/^[a-zA-Z0-9]+$/.test(username.value)) {
+    return "아이디는 8자리 이상, 영문과 숫자를 조합해주세요.";
+  }
+  return "";
+});
+
+const passwordError = computed(() => {
+  if (!password1.value) return "비밀번호를 입력해주세요.";
+  if (
+    password1.value.length < 8 ||
+    !/(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/.test(password1.value)
+  ) {
+    return "비밀번호는 영문, 숫자, 특수문자를 포함하여 8자리 이상이어야 합니다.";
+  }
+  return "";
+});
+
+const passwordMatchError = computed(() => {
+  if (!password2.value) return "비밀번호 확인을 입력해주세요.";
+  if (password1.value !== password2.value) return "비밀번호가 일치하지 않습니다.";
+  return "";
+});
+
+const emailError = computed(() => {
+  if (!email.value) return "이메일을 입력해주세요.";
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    return "유효한 이메일 주소를 입력해주세요.";
+  }
+  return "";
+});
+
+const nicknameError = computed(() => {
+  const prohibitedNicknames = ["admin", "관리자", "운영자"];
+  if (!nickname.value) return "닉네임을 입력해주세요.";
+  if (prohibitedNicknames.includes(nickname.value.toLowerCase())) {
+    return "부적절한 닉네임은 사용할 수 없습니다.";
+  }
+  return "";
+});
 
 // 선택된 은행 이름 계산
 const selectedBankName = computed(() => {
@@ -191,37 +253,69 @@ const selectedBankName = computed(() => {
   return bank ? bank.bank_nick : "";
 });
 
-// 은행 선택 처리
+// 은행 선택
 const selectBank = (bankId) => {
   selectedBank.value = bankId;
 };
 
+// 회원가입 처리
+const signin = () => {
+  if (
+    usernameError.value ||
+    passwordError.value ||
+    passwordMatchError.value ||
+    emailError.value ||
+    nicknameError.value
+  ) {
+    Swal.fire({
+        title: '회원가입 실패',
+        text: '😋 아직 입력하지 않은게 있는거같아요! 😋',
+        icon: 'error', // success, error, warning, info
+        confirmButtonText: '확인',
+        customClass: {
+          confirmButton: 'custom-error-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
+    return;
+  }
 
-const signin = function () {
   const signinData = {
     username: username.value,
     password1: password1.value,
     password2: password2.value,
-    nickname: nickname.value,
     email: email.value,
+    nickname: nickname.value,
     birth_date: birthdate.value,
     user_monthly_income: monthlyIncome.value,
     user_monthly_expenses: monthlyExpenses.value,
-    bank: selectedBank.value, // 선택된 은행 ID 추가
+    bank: selectedBank.value,
   };
 
-  axios({
-    method: "post",
-    url: `${store.BASE_URL}/dj-rest-auth/registration`,
-    data: signinData,
-  })
+  axios
+    .post("http://127.0.0.1:8000/accounts/dj-rest-auth/registration", signinData)
     .then((res) => {
-      console.log(res.data);
-      router.push("/");
-      store.isSuccess = true;
+      Swal.fire({
+        title: '회원가입 성공',
+        text: '😀 저희 서비스를 즐기러 떠나볼까요? 😀',
+        icon: 'success', // success, error, warning, info
+        confirmButtonText: '확인',
+        customClass: {
+          confirmButton: 'custom-success-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
+
+      router.push('/')
     })
     .catch((err) => {
-      console.error("회원가입 중 오류 발생:", err);
+      Swal.fire({
+        title: '회원가입 실패',
+        text: '😅 입력값을 한번 더 확인해주세요! 😅',
+        icon: 'error', // success, error, warning, info
+        confirmButtonText: '확인',
+        customClass: {
+          confirmButton: 'custom-error-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
     });
 };
 </script>
