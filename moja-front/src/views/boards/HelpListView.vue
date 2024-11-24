@@ -5,7 +5,7 @@
     <!-- Main Content -->
     <main class="main-content">
       <div class="header-section">
-        <h1 class="board-title">질문 있어요</h1>
+        <h1 class="board-title">커뮤니티</h1>
           <button class="create-btn" @click="goToCreate">글쓰기</button>
       </div>
 
