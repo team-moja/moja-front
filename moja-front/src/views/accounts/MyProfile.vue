@@ -243,7 +243,15 @@
       <div v-if="hasProducts" class="rate-comparison-section">
         <h2 class="section-title">금리 비교</h2>
         <div class="rates-container">
-          <div v-for="item in userProducts" :key="item.id" class="rate-item">
+          <div
+            v-for="item in userProducts"
+            :key="item.id"
+            class="rate-item"
+            @click="showProductDetail(item.product.id)"
+            role="button"
+            tabindex="0"
+          >
+            <!-- 기존 내용 유지 -->
             <div class="rate-header">
               <span class="product-title">{{ item.product.prdt_name }}</span>
               <span class="bank-name">{{ item.product.bank?.bank_name }}</span>
@@ -282,23 +290,74 @@
             </div>
           </div>
         </div>
+
+        <!-- 모달 -->
+        <Teleport to="body">
+          <div v-if="isModalOpen" class="modal-backdrop" @click="closeModal">
+            <div class="modal-container" @click.stop>
+              <div class="modal-header">
+                <h3>상품 상세 정보</h3>
+                <button @click="closeModal" class="modal-close">&times;</button>
+              </div>
+              <div class="modal-body">
+                <ProductDetailView :id="$route.params.id" />
+              </div>
+            </div>
+          </div>
+        </Teleport>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch, onUnmounted } from "vue";
 import { useAccountStore } from "@/stores/account";
 import axios from "axios";
-import { useRouter } from "vue-router";
-import RateChart from "@/components/RateChart.vue";
+import { useRouter, useRoute } from "vue-router";
+import ProductDetailView from "@/views/finances/ProductDetailView.vue";
 
 const accountStore = useAccountStore();
 const isEditing = ref(false);
 const userInfo = ref({});
 const userProducts = ref([]);
+const route = useRoute();
 const router = useRouter();
+const selectedProductId = ref(null);
+const isModalOpen = ref(false);
+const isFromRateChart = ref(false);
+// 현재 URL을 저장할 변수 추가
+const previousRoute = ref(null);
+
+const showProductDetail = async (productId) => {
+  // 현재 URL 저장
+  previousRoute.value = router.currentRoute.value.fullPath;
+  
+  // URL 변경 (실제 네비게이션은 prevent)
+  router.push({ 
+    name: 'productDetail', 
+    params: { id: productId } 
+  }).catch(() => {});  // Navigation prevented 에러 무시
+  
+  // 모달 열기
+  isModalOpen.value = true;
+};
+
+const closeModal = () => {
+  isModalOpen.value = false;
+  // 이전 URL로 복귀
+  if (previousRoute.value) {
+    router.push(previousRoute.value);
+  }
+};
+
+// 라우트 변경 감시
+watch(() => route.name, (newRouteName) => {
+  // productDetail 라우트로 직접 접근할 때는 모달 닫기
+  if (newRouteName === 'productDetail' && !isModalOpen.value) {
+    isModalOpen.value = false;
+  }
+});
 
 // 최저 금리 계산 함수 추가
 const getLowestRate = (options) => {
@@ -1018,5 +1077,95 @@ onMounted(async () => {
 
 .rate-legend .lowest {
   color: #93c6e7;
+}
+
+.rate-item {
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rate-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.modal-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  z-index: 1001;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-body {
+  position: relative;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #666;
+}
+
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 </style>
