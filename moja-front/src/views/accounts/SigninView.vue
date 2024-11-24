@@ -108,103 +108,140 @@ const monthlyExpenses = ref(100000);
 const selectedBank = ref(null);
 
 const banks = ref([
+  
   {
     "id": 1,
     "bank_nick": "우리",
     "bank_name": "우리은행",
+    "bank_code": "0010001",
+    "bank_url": "https://spot.wooribank.com/pot/Dream?withyou=po"
   },
   {
     "id": 2,
     "bank_nick": "SC",
     "bank_name": "한국스탠다드차타드은행",
+    "bank_code": "0010002",
+    "bank_url": "http://www.standardchartered.co.kr"
   },
   {
     "id": 3,
     "bank_nick": "아이엠",
     "bank_name": "아이엠뱅크",
+    "bank_code": "0010016",
+    "bank_url": "http://www.imbank.co.kr"
   },
   {
     "id": 4,
     "bank_nick": "부산",
     "bank_name": "부산은행",
+    "bank_code": "0010017",
+    "bank_url": "http://www.busanbank.co.kr"
   },
   {
     "id": 5,
     "bank_nick": "광주",
     "bank_name": "광주은행",
+    "bank_code": "0010019",
+    "bank_url": "http://www.kjbank.com"
   },
   {
     "id": 6,
     "bank_nick": "제주",
     "bank_name": "제주은행",
+    "bank_code": "0010020",
+    "bank_url": "https://www.jejubank.com"
   },
   {
     "id": 7,
     "bank_nick": "전북",
     "bank_name": "전북은행",
+    "bank_code": "0010022",
+    "bank_url": "https://www.jbbank.co.kr/EFINANCE_MAIN.act"
   },
   {
     "id": 8,
     "bank_nick": "경남",
     "bank_name": "경남은행",
+    "bank_code": "0010024",
+    "bank_url": "https://www.knbank.co.kr/ib20/mnu/FPMDPT020000000"
   },
   {
     "id": 9,
     "bank_nick": "IBK",
     "bank_name": "중소기업은행",
+    "bank_code": "0010026",
+    "bank_url": "http://www.ibk.co.kr"
   },
   {
     "id": 10,
     "bank_nick": "KDB",
     "bank_name": "한국산업은행",
+    "bank_code": "0010030",
+    "bank_url": "https://www.kdb.co.kr"
   },
   {
     "id": 11,
     "bank_nick": "국민",
     "bank_name": "국민은행",
+    "bank_code": "0010927",
+    "bank_url": "http://www.kbstar.com"
+  },
+  {
+    "id": 12,
+    "bank_nick": "신한",
+    "bank_name": "신한은행",
+    "bank_code": "0011625",
+    "bank_url": "http://www.shinhan.com"
   },
   {
     "id": 13,
-    "bank_nick": "신한",
-    "bank_name": "신한은행",
+    "bank_nick": "농협",
+    "bank_name": "농협은행주식회사",
+    "bank_code": "0013175",
+    "bank_url": "https://banking.nonghyup.com"
   },
   {
     "id": 14,
-    "bank_nick": "농협",
-    "bank_name": "농협은행주식회사",
+    "bank_nick": "하나",
+    "bank_name": "하나은행",
+    "bank_code": "0013909",
+    "bank_url": "http://www.hanabank.com"
   },
   {
     "id": 15,
-    "bank_nick": "하나",
-    "bank_name": "하나은행",
+    "bank_nick": "케이",
+    "bank_name": "주식회사 케이뱅크",
+    "bank_code": "0014674",
+    "bank_url": "https://www.kbanknow.com"
   },
   {
     "id": 16,
-    "bank_nick": "케이",
-    "bank_name": "주식회사 케이뱅크",
+    "bank_nick": "수협",
+    "bank_name": "수협은행",
+    "bank_code": "0014807",
+    "bank_url": "http://www.suhyup-bank.com"
   },
   {
     "id": 17,
-    "bank_nick": "수협",
-    "bank_name": "수협은행",
+    "bank_nick": "카카오",
+    "bank_name": "주식회사 카카오뱅크",
+    "bank_code": "0015130",
+    "bank_url": "https://www.kakaobank.com/"
   },
   {
     "id": 18,
-    "bank_nick": "카카오",
-    "bank_name": "주식회사 카카오뱅크",
-  },
-  {
-    "id": 19,
     "bank_nick": "토스",
     "bank_name": "토스뱅크 주식회사",
+    "bank_code": "0017801",
+    "bank_url": "https://www.tossbank.com/product-service/savings/account"
   },
   {
     "id": 0,
     "bank_nick": "없음",
     "bank_name": "없음",
   },
-
-]); // 은행 리스트
+]);
+  
 const usernameError = computed(() => {
   if (!username.value) return "아이디를 입력해주세요.";
   if (username.value.length < 8 || !/^[a-zA-Z0-9]+$/.test(username.value)) {
