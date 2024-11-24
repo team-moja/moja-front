@@ -12,10 +12,8 @@
         <div class="category-filter mb-3">
           <h5>카테고리 선택</h5>
           <div class="btn-group w-100">
-            <button 
-              v-for="category in categories" 
-              :key="category.value" 
-              :class="['btn', 'btn-outline-primary', selectedCategory === category.value ? 'active' : '']" 
+            <button v-for="category in categories" :key="category.value"
+              :class="['btn', 'btn-outline-primary', selectedCategory === category.value ? 'active' : '']"
               @click="filterByCategory(category.value)">
               {{ category.label }}
             </button>
@@ -84,6 +82,9 @@ import '@/assets/css/finances/ProductListView.css';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
+import { useAccountStore } from '@/stores/account';
+
+const accountStote = useAccountStore()
 
 const categories = ref([
   { label: '전체', value: null },
@@ -235,9 +236,27 @@ const moveToDetail = (productId) => {
   router.push({ name: 'productDetail', params: { id: productId } });
 };
 
+
+// 기본 알림
+
+// 제목과 텍스트 추가
 // 추천 페이지 이동
+import Swal from 'sweetalert2';
+
 const moveToRecommend = () => {
-  router.push('/product/recommend');
+  if (accountStote.token === '') {
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 해야 예적금 추천을 받을 수 있습니다.',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+      },
+    });
+  } else {
+    router.push('/product/recommend');
+  }
 };
 
 // 검색 필터
@@ -297,11 +316,10 @@ onMounted(() => {
       console.error(err);
     });
 });
+
+
 </script>
 
 <style scoped>
-.btn-group .btn.active {
-  background-color: #007bff;
-  color: white;
-}
+
 </style>

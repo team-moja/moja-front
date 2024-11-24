@@ -111,6 +111,7 @@ import axios from 'axios';
 import Login from '@/components/Login.vue'
 const accountStore = useAccountStore()
 const isModalOpen = ref(false)
+import Swal from 'sweetalert2';
 
 const toggleModal = function () {
   accountStore.isSuccess = !accountStore.isSuccess
@@ -123,12 +124,25 @@ const moveToSignIn = function () {
   router.push('/account/signin')
 }
 
+
 const logout = function () {
   axios({
     url: `http://127.0.0.1:8000/accounts/dj-rest-auth/logout/`,
     method: 'post'
   })
+
+  Swal.fire({
+        title: '로그아웃',
+        text: '😊 다음에 또 오세요!! 😊',
+        icon: 'success', // success, error, warning, info
+        confirmButtonText: '확인',
+        customClass: {
+          confirmButton: 'custom-success-button', // 버튼에 커스텀 클래스 추가
+        },
+      });
+
   accountStore.token = ''
+  accountStore.userId = 0
 }
 
 </script>

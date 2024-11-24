@@ -67,14 +67,14 @@
       <!-- 버튼 -->
         <button
           class="btn custom-button text-white"
-          v-if="!isProductSaved"
+          v-if="!isProductSaved && accountStore.token !== ''"
           @click="saveUserProduct(product.id)"
         >
           내 상품 등록하기
         </button>
         <button
           class="btn btn-danger text-white"
-          v-if="isProductSaved"
+          v-if="isProductSaved && accountStore.token !== ''"
           @click="deleteUserProduct(product.id)"
         >
           내 상품 삭제하기

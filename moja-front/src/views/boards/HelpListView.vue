@@ -6,9 +6,7 @@
     <main class="main-content">
       <div class="header-section">
         <h1 class="board-title">질문 있어요</h1>
-        <router-link to="/help/create">
-          <button class="create-btn">글쓰기</button>
-        </router-link>
+          <button class="create-btn" @click="goToCreate">글쓰기</button>
       </div>
 
       <table class="board-table">
@@ -22,14 +20,12 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="help in helps" :key="help.id">
+          <tr v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
             <td>{{ help.id }}</td>
             <td>질문 있어요</td>
             <td>{{ help.user }}</td>
             <td class="title-cell">
-              <router-link :to="{name:'help-detail', params: {id:help.id}}">
                 {{ help.help_title }}
-              </router-link>
             </td>
             <td>{{ formatDate(help.help_date) }}</td>
           </tr>
@@ -43,8 +39,44 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { useHelpStore } from '@/stores/help';
+import { useAccountStore } from '@/stores/account';
+import { useRouter } from 'vue-router';
+import Swal from 'sweetalert2';
 
 const store = useHelpStore();
+const accountStore = useAccountStore()
+const router = useRouter()
+
+const goToCreate = function () {
+  if (accountStore.token === '') {
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 해야 질문을 남길 수 있어요!.',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+      },
+    });
+  } else {
+    router.push({name: 'help-create'})
+  }
+}
+const goToDetail = function (helpId) {
+  if (accountStore.token === '') {
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 해야 게시글을 볼 수 있어요!.',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+      },
+    });
+  } else {
+    router.push({name: 'help-detail', params:{id: helpId}})
+  }
+}
 
 onMounted(async () => {
   await store.getHelps()
