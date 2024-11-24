@@ -9,6 +9,18 @@
           <button class="create-btn" @click="goToCreate">글쓰기</button>
       </div>
 
+      <!-- 카테고리 필터 추가 -->
+      <div class="category-filter mb-3">
+        <div class="btn-group w-100">
+          <button v-for="category in categories" 
+                  :key="category.value"
+                  :class="['filter-btn', selectedCategory === category.value ? 'active' : '']"
+                  @click="filterByCategory(category.value)">
+            {{ category.label }}
+          </button>
+        </div>
+      </div>
+
       <table class="board-table">
         <thead>
           <tr>
@@ -20,13 +32,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="tr-cell" v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
+          <tr class="tr-cell" v-for="help in filteredHelps" :key="help.id" @click="goToDetail(help.id)">
             <td>{{ help.id }}</td>
             <td>{{ getCategoryLabel(help.help_category) }}</td>
             <td>{{ help.user }}</td>
-            <td>
-                {{ help.help_title }}
-            </td>
+            <td>{{ help.help_title }}</td>
             <td>{{ formatDate(help.help_date) }}</td>
           </tr>
         </tbody>
@@ -37,7 +47,7 @@
 </template>
 
 <script setup>
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
 import { useHelpStore } from '@/stores/help';
 import { useAccountStore } from '@/stores/account';
 import { useRouter } from 'vue-router';
@@ -46,6 +56,8 @@ import Swal from 'sweetalert2';
 const store = useHelpStore();
 const accountStore = useAccountStore()
 const router = useRouter()
+// const helps = ref([]);
+const selectedCategory = ref(null); // 선택된 카테고리 상태
 
 const goToCreate = function () {
   if (accountStore.token === '') {
@@ -91,6 +103,14 @@ const formatDate = (date) => {
   return date.split('T')[0];
 };
 
+// 카테고리 옵션 정의
+const categories = ref([
+  { value: null, label: '전체' },
+  { value: 'HELP', label: '도와줘요' },
+  { value: 'RECOM', label: '추천해요' },
+  { value: 'TOGETHER', label: '함께해요' }
+]);
+
 // 카테고리 매핑 객체
 const categoryMapping = {
   'HELP': '도와줘요',
@@ -100,6 +120,19 @@ const categoryMapping = {
 
 const getCategoryLabel = (category) => {
   return categoryMapping[category] || category;
+};
+
+// 필터링된 게시글 목록
+const filteredHelps = computed(() => {
+  if (!selectedCategory.value) {
+    return helps.value; // 전체 선택시 모든 게시글 반환
+  }
+  return helps.value.filter(help => help.help_category === selectedCategory.value);
+});
+
+// 카테고리 필터 함수
+const filterByCategory = (category) => {
+  selectedCategory.value = category;
 };
 
 </script>
@@ -231,4 +264,34 @@ const getCategoryLabel = (category) => {
   color: #40A2E3;
   /* text-decoration: solid underline #40A2e3 4px; */
 }
+
+.category-filter {
+  margin-bottom: 2rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.filter-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  border: 1px solid #40A2E3;
+  background-color: white;
+  color: #40A2E3;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  background-color: #e8f4ff;
+}
+
+.filter-btn.active {
+  background-color: #40A2E3;
+  color: white;
+}
+
 </style>
