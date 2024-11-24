@@ -85,6 +85,20 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useFinanceStore } from "@/stores/finance";
+import Swal from 'sweetalert2';
+
+Swal.fire({
+      title: '설명',
+      text: '월 저축액과 저축기간을 바꿔보며 비교할 수 있어요!',
+      icon: 'info', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-info-button', // 버튼에 커스텀 클래스 추가
+      },
+      timer: 2000, // 1초 후에 자동으로 닫힘
+  // showConfirmButton: false, // 확인 버튼 숨기기
+    })
+
 
 // Router 및 Store 활용
 const router = useRouter();

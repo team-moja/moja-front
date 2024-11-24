@@ -7,7 +7,7 @@
           <div class="banner-text">
             <h1 class="nowrap">모으자 자산!<br>모르겠다 자산관리!</h1>
             <p class="nowrap">간단한 과정을 거쳐 최적의 상품을 추천받을 수 있습니다.</p>
-            <button @click="startRecommendation" class="start-button">시작하기</button>
+            <button @click="startRecommendation" class="start-button" v-if="accountStore.token === ''">시작하기</button>
           </div>
           <div class="banner-image">
             <img src="/image/mainmoney.png" alt="메인 이미지" class="main-money-image" />
@@ -17,15 +17,15 @@
     </section>
 
     <!-- 카드 섹션 -->
-    <div class="main-content">      
+    <div class="main-content">
       <!-- 하단 콘텐츠 섹션 -->
       <div class="bottom-container">
         <!-- HOT 게시글 -->
         <div class="hot-posts-section">
           <h2 class="section-title">🔥 HOT 게시글</h2>
           <div class="post-list">
-            <div class="post-item" v-for="post in hotHelps" :key="post.id"
-            @click="goToDetail(post.id)" style="cursor: pointer">
+            <div class="post-item" v-for="post in hotHelps" :key="post.id" @click="goToDetail(post.id)"
+              style="cursor: pointer">
               <div class="post-content">
                 <span class="post-badge">인기 게시글!!</span>
                 <p class="post-text">{{ post.help_title }}</p>
@@ -57,7 +57,7 @@
                 <span class="button-text-long">카드 추천받기</span>
                 <span class="button-text-short">카드</span>
               </button>
-              <button class="rec-button">
+              <button class="rec-button" @click="goToProductRecommend">
                 <span class="button-text-long">예적금 추천받기</span>
                 <span class="button-text-short">예적금</span>
               </button>
@@ -66,12 +66,7 @@
 
           <!-- 고정된 모자 아이콘 -->
           <div class="fixed-cap-icon">
-            <img 
-              src="/image/cap.png" 
-              alt="모자 아이콘" 
-              class="cap-icon" 
-              @click="toggleModal"
-            />
+            <img src="/image/cap.png" alt="모자 아이콘" class="cap-icon" @click="toggleModal" />
           </div>
 
           <!-- 모달 -->
@@ -94,32 +89,32 @@
       </div>
 
       <div v-if="isExchange" class="modal-backdrop">
-      <div class="exchange-modal-content">
-        <div class="exchange-modal-header">
-          <h5 class="exchange-modal-title">환율 계산기</h5>
-        </div>
-        <div class="exchange-modal-body">
-          <MoneyChangeView/>
-        </div>
-        <div class="exchange-modal-footer">
-          <button class="btn btn-secondary" @click="openExchange">닫기</button>
+        <div class="exchange-modal-content">
+          <div class="exchange-modal-header">
+            <h5 class="exchange-modal-title">환율 계산기</h5>
+          </div>
+          <div class="exchange-modal-body">
+            <MoneyChangeView />
+          </div>
+          <div class="exchange-modal-footer">
+            <button class="btn btn-secondary" @click="openExchange">닫기</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div v-if="isMap" class="modal-backdrop">
-      <div class="map-modal-content">
-        <div class="map-modal-header">
-          <h5 class="map-modal-title">지점 검색</h5>
-        </div>
-        <div class="map-modal-body">
-          <MapTest />
-        </div>
-        <div class="map-modal-footer">
-          <button class="btn btn-secondary" @click="openMap">닫기</button>
+      <div v-if="isMap" class="modal-backdrop">
+        <div class="map-modal-content">
+          <div class="map-modal-header">
+            <h5 class="map-modal-title">지점 검색</h5>
+          </div>
+          <div class="map-modal-body">
+            <MapTest />
+          </div>
+          <div class="map-modal-footer">
+            <button class="btn btn-secondary" @click="openMap">닫기</button>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   </div>
 </template>
@@ -131,10 +126,13 @@ import { useRouter } from 'vue-router';
 import { useHelpStore } from '@/stores/help';
 import MoneyChangeView from '../exchange/MoneyChangeView.vue';
 import MapTest from '@/components/MapTest.vue';
+import { useAccountStore } from '@/stores/account';
+import Swal from 'sweetalert2';
 
 const isModalOpen = ref(false);
 const isExchange = ref(false)
 const isMap = ref(false)
+const accountStore = useAccountStore()
 
 const toggleModal = () => {
   isModalOpen.value = !isModalOpen.value;
@@ -146,7 +144,7 @@ const closeModal = () => {
 
 const handleButtonClick = (action) => {
   console.log(`Selected action: ${action}`);
- // 각 버튼에 대한 동작 구현
+  // 각 버튼에 대한 동작 구현
   closeModal();
 };
 
@@ -167,7 +165,7 @@ const hotHelps = computed(() => store.hotHelps);
 
 // 게시글 상세 페이지로 이동하는 함수
 const goToDetail = (id) => {
-  router.push({ 
+  router.push({
     name: 'help-detail',
     params: { id: id }
   });
@@ -179,9 +177,39 @@ onMounted(async () => {
 
 
 const startRecommendation = () => {
-  // 추천 시작 로직
-  console.log('추천 시작');
+  Swal.fire({
+    title: '시작하기',
+    text: '회원가입부터 시작해봐요!',
+    icon: 'info', // success, error, warning, info
+    confirmButtonText: '확인',
+    customClass: {
+      confirmButton: 'custom-info-button', // 버튼에 커스텀 클래스 추가
+    },
+      timer: 1500,
+  }).then(() => {
+    // 2초 딜레이 후 이동
+    setTimeout(() => {
+      router.push('/account/signin');
+    }, 200); // 2000ms = 2초
+  });
 };
+
+const goToProductRecommend = function () {
+  if (accountStore.token === '') {
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 안하신거같아요!',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      timer: 1500,
+      customClass: {
+        confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
+      },
+    })
+  } else {
+    router.push('/product/recommend');
+  }
+}
 </script>
 
 
@@ -196,7 +224,8 @@ const startRecommendation = () => {
   margin-left: calc(-50vw + 50%);
   margin-right: calc(-50vw + 50%);
   padding: 1rem 0;
-  overflow: hidden; /* 텍스트가 배너 밖으로 넘어가는 것을 방지 */
+  overflow: hidden;
+  /* 텍스트가 배너 밖으로 넘어가는 것을 방지 */
 }
 
 .banner-content {
@@ -303,7 +332,7 @@ const startRecommendation = () => {
 
 .post-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .post-text {
@@ -379,7 +408,8 @@ const startRecommendation = () => {
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
   position: relative;
-  padding-bottom: 2rem; /* 모자 아이콘을 위한 여백 */
+  padding-bottom: 2rem;
+  /* 모자 아이콘을 위한 여백 */
 }
 
 .rec-button {
@@ -450,7 +480,8 @@ const startRecommendation = () => {
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(128, 128, 128, 0.3); /* #0D9276 with opacity */
+  background: rgba(128, 128, 128, 0.3);
+  /* #0D9276 with opacity */
   backdrop-filter: blur(2px);
   display: block;
   z-index: 1000;
@@ -458,7 +489,8 @@ const startRecommendation = () => {
 
 .modal-content {
   position: absolute;
-  bottom: 120px; /* 모자 아이콘 위치보다 위에 */
+  bottom: 120px;
+  /* 모자 아이콘 위치보다 위에 */
   right: 0;
   width: 200px;
   background: white;
@@ -537,6 +569,7 @@ const startRecommendation = () => {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -549,7 +582,7 @@ const startRecommendation = () => {
   .banner-text h1 {
     font-size: calc(1.5rem + 1vw);
   }
-  
+
   .banner-text p {
     font-size: calc(0.9rem + 0.5vw);
   }
@@ -562,18 +595,18 @@ const startRecommendation = () => {
     right: 20px;
   }
 
-.cap-icon {
-  width: 50px;
-  height: 50px;
-}
+  .cap-icon {
+    width: 50px;
+    height: 50px;
+  }
 
-.modal-content {
-  bottom: 80px;
-  right: 20px;
-  width: 180px;
-}
+  .modal-content {
+    bottom: 80px;
+    right: 20px;
+    width: 180px;
+  }
 
-.banner-section {
+  .banner-section {
     padding: 1.5rem 0;
   }
 
@@ -603,11 +636,11 @@ const startRecommendation = () => {
   .button-text-long {
     display: none;
   }
-  
+
   .button-text-short {
     display: inline-block;
   }
-  
+
   .rec-button {
     padding: 0.8rem;
     font-size: 0.9rem;
