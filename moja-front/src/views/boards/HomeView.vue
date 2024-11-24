@@ -250,8 +250,8 @@ const goToProductRecommend = function () {
 
 .main-content {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  margin: auto;
+  padding: 0rem 1rem;
 }
 
 .bottom-container {

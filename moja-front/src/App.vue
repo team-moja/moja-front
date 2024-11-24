@@ -100,7 +100,7 @@ body {
   flex-grow: 1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 2rem 1rem;
+  padding: 0rem 1rem;
 }
 
 .btn-group .btn.active {
