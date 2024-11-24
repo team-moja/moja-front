@@ -5,9 +5,12 @@
       <!-- 프로필 이미지 -->
       <div class="profile-image-section">
         <div class="profile-image-container">
-          <img src="/cap-image.png" alt="모자" class="cap-image">
-          <img :src="previewImage || profileImage || '/default-profile.png'" alt="프로필 이미지" 
-          class="profile-image">
+          <img src="/cap-image.png" alt="모자" class="cap-image" />
+          <img
+            :src="previewImage || profileImage || '/default-profile.png'"
+            alt="프로필 이미지"
+            class="profile-image"
+          />
 
           <!-- 이미지 업로드 버튼-->
           <div class="image-upload-controls" v-if="isEditing">
@@ -20,16 +23,16 @@
                 @change="handleImageChange"
                 class="hidden-input"
                 ref="fileInput"
-              >
+              />
             </label>
             <div v-if="previewImage" class="mt-2">
               <button @click="cancelImageUpload" class="cancel-upload-button">
                 취소
               </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
       <div class="profile-header">
         <h1>회원 정보</h1>
@@ -127,11 +130,7 @@
             <div class="form-item">
               <label>주거래은행</label>
               <select v-model="editForm.bank">
-                <option
-                  v-for="bank in banks"
-                  :key="bank.id"
-                  :value="bank.id"
-                >
+                <option v-for="bank in banks" :key="bank.id" :value="bank.id">
                   {{ bank.bank_name }}
                 </option>
               </select>
@@ -147,18 +146,111 @@
         </form>
       </div>
     </div>
+
+    <div class="my-products-section">
+      <h2 class="section-title">나의 상품</h2>
+
+      <!-- 상품이 없을 경우 -->
+      <div v-if="!hasProducts" class="no-products">
+        <p>등록된 상품이 없습니다.</p>
+      </div>
+
+      <!-- 상품 리스트 -->
+      <div v-else class="products-grid">
+        <div v-for="item in userProducts" :key="item.id" class="product-card">
+          <!-- item.id를 key로 사용 -->
+          <div v-if="item.product" class="card mb-4 shadow-sm">
+            <!-- item.product가 있는지 확인 -->
+            <div class="card-body">
+              <div class="product-header">
+                <div class="bank-info">
+                  <img
+                    :src="`/src/assets/images/banks/${
+                      item.product.bank?.bank_name || 'default'
+                    }.png`"
+                    :alt="item.product.bank?.bank_name"
+                    class="bank-logo"
+                    @error="handleImageError"
+                  />
+                  <div class="bank-details">
+                    <h5 class="product-name">{{ item.product.prdt_name }}</h5>
+                    <small class="text-muted">{{
+                      item.product.bank?.bank_name
+                    }}</small>
+                  </div>
+                </div>
+              </div>
+
+              <hr />
+
+              <div class="product-details">
+                <div class="rate-info">
+                  <p>
+                    <span class="label">최고 금리:</span>
+                    <span class="value"
+                      >{{ getHighestRate(item.product.product_options) }}%</span
+                    >
+                  </p>
+                  <p v-if="item.product.product_options?.length">
+                    <span class="label">가입기간:</span>
+                    <span class="value">
+                      {{ item.product.product_options[0].save_trm }}개월 ~
+                      {{
+                        item.product.product_options[
+                          item.product.product_options.length - 1
+                        ].save_trm
+                      }}개월
+                    </span>
+                  </p>
+                </div>
+
+                <div class="max-limit" v-if="item.product.max_limit !== null">
+                  <p>
+                    <span class="label">최대 가입금액:</span>
+                    <span class="value">{{
+                      formatMaxLimit(item.product.max_limit)
+                    }}</span>
+                  </p>
+                </div>
+              </div>
+
+              <div class="button-group">
+                <button
+                  class="btn btn-danger"
+                  @click="deleteUserProduct(item.product.id)"
+                >
+                  상품 삭제
+                </button>
+                <router-link
+                  :to="{
+                    name: 'productDetail',
+                    params: { id: item.product.id },
+                  }"
+                  class="btn btn-primary"
+                >
+                  상세 보기
+                </router-link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, computed, onMounted } from "vue";
 import { useAccountStore } from "@/stores/account";
 import axios from "axios";
+import { useRouter } from "vue-router";
 
 const accountStore = useAccountStore();
 const isEditing = ref(false);
 const userInfo = ref({});
-// const banks = ref([])
+const userProducts = ref([]);
+const router = useRouter();
+
 const banks = ref([
   {
     id: 1,
@@ -270,14 +362,14 @@ const editForm = ref({
 const fetchUserInfo = async () => {
   try {
     const response = await axios({
-      method: 'get',
+      method: "get",
       url: `${accountStore.BASE_URL}/detail/${accountStore.userId}`,
       headers: {
-        'Authorization': `Token ${accountStore.token}`
-      }
-    })
-    console.log('서버 응답 데이터:', response.data)
-    
+        Authorization: `Token ${accountStore.token}`,
+      },
+    });
+    console.log("서버 응답 데이터:", response.data);
+
     userInfo.value = {
       userId: response.data.pk,
       username: response.data.username,
@@ -286,24 +378,24 @@ const fetchUserInfo = async () => {
       birth_date: response.data.birth_date,
       user_monthly_income: parseInt(response.data.user_monthly_income) || 0,
       user_monthly_expenses: parseInt(response.data.user_monthly_expenses) || 0,
-      bank: response.data.bank
-    }
+      bank: response.data.bank,
+    };
 
     // 프로필 이미지 URL 설정
     if (response.data.profile_image) {
       // BASE_URL에서 'accounts'를 제거하고 미디어 URL 구성
-      const baseUrl = accountStore.BASE_URL.replace('/accounts', '')
-      profileImage.value = `${response.data.profile_image}`
-      console.log('프로필 이미지 URL:', profileImage.value)
+      const baseUrl = accountStore.BASE_URL.replace("/accounts", "");
+      profileImage.value = `${response.data.profile_image}`;
+      console.log("프로필 이미지 URL:", profileImage.value);
     } else {
-      profileImage.value = '/default-profile.png'
+      profileImage.value = "/default-profile.png";
     }
-    
-    initEditForm()
+
+    initEditForm();
   } catch (error) {
-    console.error('사용자 정보 로드 실패:', error)
+    console.error("사용자 정보 로드 실패:", error);
   }
-}
+};
 
 // 수정 폼 초기화 - 수정 가능한 필드만 포함
 const initEditForm = () => {
@@ -325,12 +417,12 @@ const toggleEdit = () => {
 
 const formatDate = (date) => {
   if (!date) return "";
-  return new Date(date).toLocaleDateString("ko-KR")
+  return new Date(date).toLocaleDateString("ko-KR");
 };
 
 const formatCurrency = (amount) => {
   const num = parseInt(amount) || 0;
-  return new Intl.NumberFormat("ko-KR").format(num)
+  return new Intl.NumberFormat("ko-KR").format(num);
 };
 
 // 폼 제출 처리 - 수정 가능한 필드만 전송
@@ -355,98 +447,152 @@ const formatCurrency = (amount) => {
 // };
 const handleSubmit = async () => {
   try {
-    const formData = new FormData()
-    
+    const formData = new FormData();
+
     // 기존 폼 데이터 추가
-    Object.keys(editForm.value).forEach(key => {
+    Object.keys(editForm.value).forEach((key) => {
       if (editForm.value[key] !== null) {
-        formData.append(key, editForm.value[key])
+        formData.append(key, editForm.value[key]);
       }
-    })
-    
+    });
+
     // 이미지 파일이 있으면 추가
     if (imageFile.value) {
-      formData.append('profile_image', imageFile.value)
-      console.log('이미지 파일 폼데이터에 추가됨:', imageFile.value.name)
+      formData.append("profile_image", imageFile.value);
+      console.log("이미지 파일 폼데이터에 추가됨:", imageFile.value.name);
     }
 
     const response = await axios({
-      method: 'put',
+      method: "put",
       url: `${accountStore.BASE_URL}/profile/update/`,
       headers: {
-        'Authorization': `Token ${accountStore.token}`,
-        'Content-Type': 'multipart/form-data'
+        Authorization: `Token ${accountStore.token}`,
+        "Content-Type": "multipart/form-data",
       },
-      data: formData
-    })
+      data: formData,
+    });
 
-    console.log('서버 응답:', response.data)
+    console.log("서버 응답:", response.data);
 
     if (response.data.profile_image) {
       // 전체 URL이 아닌 경우 BASE_URL과 결합
-      profileImage.value = response.data.profile_image.startsWith('http') 
-        ? response.data.profile_image 
-        : `${accountStore.BASE_URL}${response.data.profile_image}`
+      profileImage.value = response.data.profile_image.startsWith("http")
+        ? response.data.profile_image
+        : `${accountStore.BASE_URL}${response.data.profile_image}`;
     }
 
-    await fetchUserInfo()
-    isEditing.value = false
-    imageFile.value = null
-    previewImage.value = null
-    alert('회원 정보가 수정되었습니다.')
+    await fetchUserInfo();
+    isEditing.value = false;
+    imageFile.value = null;
+    previewImage.value = null;
+    alert("회원 정보가 수정되었습니다.");
   } catch (error) {
-    console.error('회원 정보 수정 실패:', error)
-    console.error('에러 상세:', error.response?.data)
-    alert('회원 정보 수정에 실패했습니다.')
+    console.error("회원 정보 수정 실패:", error);
+    console.error("에러 상세:", error.response?.data);
+    alert("회원 정보 수정에 실패했습니다.");
   }
-}
-
+};
 
 // 기본 프로필 이미지 경로
-const profileImage = ref("/default-profile.png")
-const previewImage = ref(null)
-const imageFile = ref(null)
-const fileInput = ref(null)
+const profileImage = ref("/default-profile.png");
+const previewImage = ref(null);
+const imageFile = ref(null);
+const fileInput = ref(null);
 
 const handleImageChange = (event) => {
-  const file = event.target.files[0]
+  const file = event.target.files[0];
   if (file) {
     // 파일 크기 체크 (예: 5MB 제한)
     if (file.size > 5 * 1024 * 1024) {
-      alert('파일 크기는 5MB를 초과할 수 없습니다.')
-      event.target.value = '' // 파일 선택 초기화
-      return
+      alert("파일 크기는 5MB를 초과할 수 없습니다.");
+      event.target.value = ""; // 파일 선택 초기화
+      return;
     }
 
     // 이미지 파일 타입 체크
-    if (!file.type.startsWith('image/')) {
-      alert('이미지 파일만 업로드 가능합니다.')
-      event.target.value = ''
-      return
+    if (!file.type.startsWith("image/")) {
+      alert("이미지 파일만 업로드 가능합니다.");
+      event.target.value = "";
+      return;
     }
 
-    imageFile.value = file
+    imageFile.value = file;
     // 미리보기 생성
-    const reader = new FileReader()
+    const reader = new FileReader();
     reader.onload = (e) => {
-      previewImage.value = e.target.result
-    }
-    reader.readAsDataURL(file)
-    console.log('이미지 선택됨:', file.name)
+      previewImage.value = e.target.result;
+    };
+    reader.readAsDataURL(file);
+    console.log("이미지 선택됨:", file.name);
   }
-}
+};
 
 // 이미지 업로드 취소
 const cancelImageUpload = () => {
-  imageFile.value = null
-  previewImage.value = null
+  imageFile.value = null;
+  previewImage.value = null;
   if (fileInput.value) {
-    fileInput.value.value = '' // 파일 입력 초기화
+    fileInput.value.value = ""; // 파일 입력 초기화
   }
-}
+};
 
-onMounted(() => {
-  fetchUserInfo();
+// 상품 관련 함수들
+const getHighestRate = (options) => {
+  if (!options || !options.length) return 0;
+  return Math.max(...options.map((opt) => opt.max_intr_rate)).toFixed(2);
+};
+
+const formatMaxLimit = (maxLimit) => {
+  if (maxLimit === null) return "제한 없음";
+  if (maxLimit >= 100000000) {
+    return `${Math.floor(maxLimit / 100000000)}억 ${Math.floor(
+      (maxLimit % 100000000) / 10000
+    )}만원`;
+  } else if (maxLimit >= 10000) {
+    return `${Math.floor(maxLimit / 10000)}만원`;
+  }
+  return `${maxLimit}원`;
+};
+
+const fetchUserProducts = async () => {
+  try {
+    const response = await axios.get(
+      "http://127.0.0.1:8000/finances/user-product/",
+      {
+        params: { user_id: accountStore.userId },
+      }
+    );
+    console.log("받은 상품 데이터:", response.data); // 데이터 확인용 로그
+    userProducts.value = response.data;
+  } catch (error) {
+    console.error("상품 정보 로드 실패:", error);
+    userProducts.value = []; // 에러 시 빈 배열로 초기화
+  }
+};
+
+const deleteUserProduct = async (productId) => {
+  try {
+    await axios.delete("http://127.0.0.1:8000/finances/user-product/", {
+      data: { product_id: productId },
+    });
+    // 상품 목록 갱신
+    await fetchUserProducts();
+    alert("상품이 삭제되었습니다.");
+  } catch (error) {
+    console.error("상품 삭제 실패:", error);
+    alert("상품 삭제에 실패했습니다.");
+  }
+};
+
+// 상품 데이터 디버깅용 computed 속성 추가
+const hasProducts = computed(() => {
+  console.log("현재 상품 목록:", userProducts.value);
+  return userProducts.value && userProducts.value.length > 0;
+});
+
+onMounted(async () => {
+  await fetchUserInfo();
+  await fetchUserProducts();
 });
 </script>
 
@@ -617,7 +763,7 @@ onMounted(() => {
   height: 200px;
   border-radius: 50%;
   object-fit: cover;
-  border: 3px solid #40A2E3;
+  border: 3px solid #40a2e3;
 }
 
 .cap-image {
@@ -643,5 +789,83 @@ onMounted(() => {
 
 .cancel-upload-button:hover {
   background-color: #ff3333;
+}
+
+/* 나의 상품 섹션 스타일 */
+.my-products-section {
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.no-products {
+  text-align: center;
+  padding: 2rem;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+}
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.product-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.bank-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bank-logo {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bank-details {
+  flex-grow: 1;
+}
+
+.product-name {
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+.product-details {
+  margin-top: 1rem;
+}
+
+.label {
+  color: #666;
+  margin-right: 0.5rem;
+}
+
+.value {
+  font-weight: 500;
+  color: #333;
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.button-group .btn {
+  flex: 1;
 }
 </style>

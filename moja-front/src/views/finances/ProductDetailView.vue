@@ -1,3 +1,4 @@
+<!-- views/finances/ProductDetailView.vue -->
 <template>
   <div class="child-container py-5" v-if="product.id">
     <!-- 상품 정보 카드 -->
