@@ -204,12 +204,12 @@
                   </p>
                 </div>
 
-                <div class="max-limit" v-if="item.product.max_limit !== null">
+                <div class="max-limit">
                   <p>
                     <span class="label">최대 가입금액:</span>
-                    <span class="value">{{
-                      formatMaxLimit(item.product.max_limit)
-                    }}</span>
+                    <span class="value">
+                      {{ item.product.max_limit === null ? '제한 없음' : formatMaxLimit(item.product.max_limit) }}
+                    </span>
                   </p>
                 </div>
               </div>
