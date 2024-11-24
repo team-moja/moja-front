@@ -36,7 +36,6 @@
   margin-bottom: 8px; /* 로고와 텍스트 간격 */
 }
 
-
 .card {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -55,11 +54,19 @@
   margin-left: -10px; /* 음수 값을 사용해 왼쪽으로 이동 */
 }
 
-.bank-filter, .rate-slider, .search-section {
+.bank-filter,
+.rate-slider,
+.search-section,
+.category-filter {
   margin-left: -10px; /* 필터 섹션을 왼쪽으로 이동 */
 }
-.search-section{
+
+.search-section {
   margin-top: 30px;
+}
+
+.category-filter {
+  margin-bottom: 20px;
 }
 
 .rate-slider {
@@ -131,28 +138,36 @@
   background-color: #40A2E3;
 }
 
-
-
-@media (max-width: 768px) {
-  .rate-slider {
-    padding: 10px;
-  }
-
-  .rate-slider h5 {
-    font-size: 1rem;
-  }
-
-  .rate-slider label {
-    font-size: 0.8rem;
-  }
+/* 버튼 그룹 정렬 및 스타일 */
+.category-filter .btn-group {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
 }
 
+.category-filter .btn-group .btn {
+  flex: 1;
+  margin: 0 5px;
+  font-size: 0.9rem;
+  padding: 8px 10px;
+  border-radius: 5px;
+  transition: all 0.3s ease;
+}
 
+.category-filter .btn-group .btn.active {
+  background-color: #40A2E3;
+  color: white;
+}
+
+/* 반응형 스타일 */
 @media (max-width: 768px) {
-  .bank-filter, .rate-slider, .search-section {
+  .bank-filter,
+  .rate-slider,
+  .search-section,
+  .category-filter {
     margin-left: 0; /* 작은 화면에서는 기본 위치로 복구 */
   }
-  
+
   .bank-item {
     width: 70px;
   }
@@ -168,5 +183,10 @@
 
   .rate-info p {
     font-size: 0.8rem;
+  }
+
+  .category-filter .btn-group .btn {
+    font-size: 0.8rem;
+    padding: 6px 8px;
   }
 }
