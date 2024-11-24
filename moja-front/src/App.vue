@@ -14,6 +14,7 @@
     <main class="main-content">
       <router-view></router-view>
     </main>
+    <MojaModal></MojaModal>
     <Footer />
   </div>
 </template>
@@ -24,6 +25,7 @@ import { useAccountStore } from './stores/account';
 // import Layout from '@/components/Layout.vue';
 import Header from '@/components/Header.vue'
 import Footer from '@/components/Footer.vue'
+import MojaModal from './components/MojaModal.vue';
 
 const router = useRouter()
 const store = useAccountStore()
