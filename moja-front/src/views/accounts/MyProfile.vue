@@ -130,7 +130,12 @@
             <div class="form-item">
               <label>주거래은행</label>
               <select v-model="editForm.bank">
-                <option v-for="bank in banks" :key="bank.id" :value="bank.id">
+                <option
+                  v-for="bank in banks"
+                  :key="bank.id"
+                  :value="bank.id"
+                  :selected="bank.id === editForm.bank"
+                >
                   {{ bank.bank_name }}
                 </option>
               </select>
