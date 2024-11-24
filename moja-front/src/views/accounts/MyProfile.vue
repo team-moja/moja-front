@@ -293,7 +293,7 @@ const fetchUserInfo = async () => {
     if (response.data.profile_image) {
       // BASE_URL에서 'accounts'를 제거하고 미디어 URL 구성
       const baseUrl = accountStore.BASE_URL.replace('/accounts', '')
-      profileImage.value = `${baseUrl}${response.data.profile_image}`
+      profileImage.value = `${response.data.profile_image}`
       console.log('프로필 이미지 URL:', profileImage.value)
     } else {
       profileImage.value = '/default-profile.png'
