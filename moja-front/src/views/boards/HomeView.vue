@@ -32,27 +32,27 @@
     <div class="main-content">
       <!-- 하단 콘텐츠 섹션 -->
       <div class="bottom-container">
-        <!-- HOT 게시글 -->
-        <div class="hot-posts-section">
-          <h2 class="section-title">🔥 HOT 게시글</h2>
-          <div class="post-list">
-            <div
-              class="post-item"
-              v-for="post in hotHelps"
-              :key="post.id"
-              @click="goToDetail(post.id)"
-              style="cursor: pointer"
-            >
-              <div class="post-content">
-                <span class="post-badge">인기 게시글!!</span>
-                <p class="post-text">{{ post.help_title }}</p>
-              </div>
-              <div class="post-stats">
-                <span>❤️ {{ post.likes_count }}</span>
-              </div>
+      <!-- HOT 게시글 -->
+      <div class="hot-posts-section">
+        <h2 class="section-title">🔥 HOT 게시글</h2>
+        <div class="post-list">
+          <div
+            class="post-item"
+            v-for="(post, index) in hotHelps"
+            :key="post.id"
+            @click="goToDetail(post.id)"
+            style="cursor: pointer"
+          >
+            <div class="post-content">
+              <span class="post-badge">👑 TOP{{ index + 1 }}</span>
+              <p class="post-text">{{ post.help_title }}</p>
+            </div>
+            <div class="post-stats">
+              <span>❤️ {{ post.like_count }}</span>
             </div>
           </div>
         </div>
+      </div>
 
         <!-- 오른쪽 섹션 -->
         <div class="right-section">
@@ -250,8 +250,8 @@ const goToProductRecommend = function () {
 
 .main-content {
   max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem 1rem;
+  margin: auto;
+  padding: 0rem 1rem;
 }
 
 .bottom-container {
@@ -262,6 +262,7 @@ const goToProductRecommend = function () {
 }
 
 /* HOT 게시글 스타일 */
+/* HOT 게시글 스타일 수정 */
 .hot-posts-section {
   background: #ffffff;
   border-radius: 16px;
@@ -272,50 +273,76 @@ const goToProductRecommend = function () {
 .section-title {
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  color: #2c3e50;
+}
+.post-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .post-item {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  transition: all 0.2s ease;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.25rem;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  position: relative;
 }
 
 .post-item:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.post-text {
-  /* 긴 제목*/
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-color: #40A2E3;
 }
 
 .post-content {
-  margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .post-badge {
-  background: #ffe4b5;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  background: linear-gradient(135deg, #40A2E3, #5fb8ff);
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
   font-size: 0.9rem;
-  margin-right: 0.5rem;
+  font-weight: 500;
+  width: fit-content;
+  box-shadow: 0 2px 4px rgba(64, 162, 227, 0.2);
 }
 
 .post-text {
-  margin: 0.5rem 0;
+  font-size: 1.3rem;
+  color: #2c3e50;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+  padding: 0.25rem 1rem;
 }
 
 .post-stats {
+  margin-top: 0.5rem;
   display: flex;
-  gap: 1rem;
-  color: #666;
-  font-size: 0.9rem;
+  justify-content: flex-end;
+  color: #40A2E3;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.post-stats span {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background-color: #f8f9fa;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
 }
 
 /* 오른쪽 섹션 스타일 */

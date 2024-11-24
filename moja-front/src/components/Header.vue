@@ -23,26 +23,6 @@
         <!-- 네비게이션 -->
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav ms-auto">
-            <!-- 검색 -->
-            <li class="nav-item">
-              <router-link to="/search" class="nav-link d-flex align-items-center">
-                <img src="/image/search.png" alt="검색" class="icon" />
-                <span class="d-lg-none ms-2">검색</span>
-              </router-link>
-            </li>
-            <!-- 저장 -->
-            <li class="nav-item">
-              <router-link to="/" class="nav-link d-flex align-items-center">
-                메인
-                <span class="d-lg-none ms-2">저장</span> <!-- 큰 화면에서 텍스트 숨김 -->
-              </router-link>
-            </li>
-            <li class="nav-item">
-              <router-link to="/saved-products" class="nav-link d-flex align-items-center">
-                <img src="/image/save.png" alt="저장" class="icon" />
-                <span class="d-lg-none ms-2">저장</span>
-              </router-link>
-            </li>
             <!-- 커뮤니티 -->
             <li class="nav-item">
               <router-link to="/help" class="nav-link d-flex align-items-center">
@@ -67,15 +47,18 @@
             <li class="nav-item" v-if="accountStore.token === ''">
               <a class="nav-link d-flex align-items-center">
                 <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
-                <span class="ms-2" @click="toggleModal">로그인</span>
+                
+                <span @click="toggleModal">로그인</span>
               </a>
             </li>
-            <a class="nav-link d-flex align-items-center">
+            
               <li class="nav-item" v-if="accountStore.token !== ''" @click="logout">
+                <a class="nav-link d-flex align-items-center">
                 <!-- <img src="" alt="로그인" class="icon d-lg-none" /> -->
-                <span class="ms-2">로그아웃</span>
+                <span>로그아웃</span>
+              </a>
               </li>
-            </a>
+           
             <li class="nav-item">
               <RouterLink to="/product" class="nav-link d-flex align-items-center">
                 <span>예적금</span>
