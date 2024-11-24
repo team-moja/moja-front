@@ -20,11 +20,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
+          <tr class="tr-cell" v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
             <td>{{ help.id }}</td>
             <td>질문 있어요</td>
             <td>{{ help.user }}</td>
-            <td class="title-cell">
+            <td>
                 {{ help.help_title }}
             </td>
             <td>{{ formatDate(help.help_date) }}</td>
@@ -211,7 +211,7 @@ const formatDate = (date) => {
   text-decoration: none;
 }
 
-.title-cell a:hover {
+.tr-cell:hover {
   color: #40A2E3;
   /* text-decoration: solid underline #40A2e3 4px; */
 }
