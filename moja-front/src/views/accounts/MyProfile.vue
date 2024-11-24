@@ -240,78 +240,166 @@
         </div>
       </div>
       <!-- 금리 비교 섹션 -->
-      <div v-if="hasProducts" class="rate-comparison-section">
-        <h2 class="section-title">금리 비교</h2>
-        <div class="rates-container">
-          <div
-            v-for="item in userProducts"
-            :key="item.id"
-            class="rate-item"
-            @click="showProductDetail(item.product.id)"
-            role="button"
-            tabindex="0"
-          >
-            <!-- 기존 내용 유지 -->
-            <div class="rate-header">
-              <span class="product-title">{{ item.product.prdt_name }}</span>
-              <span class="bank-name">{{ item.product.bank?.bank_name }}</span>
-            </div>
-            <div class="rate-bars">
-              <div class="bar-container">
-                <div
-                  class="rate-bar highest"
-                  :style="{
-                    height: `${
-                      getHighestRate(item.product.product_options) * 20
-                    }px`,
-                  }"
-                >
-                  <span class="rate-value"
-                    >{{ getHighestRate(item.product.product_options) }}%</span
+      <div v-if="hasProducts">
+        <!-- 섹션 1 -->
+        <div v-if="!showNewChart" class="rate-comparison-section">
+          <div class="section-header">
+            <h2 class="section-title">금리 비교</h2>
+            <button @click="toggleChartView" class="chart-toggle-button">
+              금리 비교하기
+            </button>
+          </div>
+          <div class="rates-container">
+            <div
+              v-for="item in userProducts"
+              :key="item.id"
+              class="rate-item"
+              @click="showProductDetail(item.product.id)"
+              role="button"
+              tabindex="0"
+            >
+              <!-- 기존 내용 유지 -->
+              <div class="rate-header">
+                <span class="product-title">{{ item.product.prdt_name }}</span>
+                <span class="bank-name">{{
+                  item.product.bank?.bank_name
+                }}</span>
+              </div>
+              <div class="rate-bars">
+                <!-- 기존 막대 차트 내용 -->
+                <div class="bar-container">
+                  <div
+                    class="rate-bar highest"
+                    :style="{
+                      height: `${
+                        getHighestRate(item.product.product_options) * 20
+                      }px`,
+                    }"
                   >
-                </div>
-                <div
-                  class="rate-bar lowest"
-                  :style="{
-                    height: `${
-                      getLowestRate(item.product.product_options) * 20
-                    }px`,
-                  }"
-                >
-                  <span class="rate-value"
-                    >{{ getLowestRate(item.product.product_options) }}%</span
+                    <span class="rate-value"
+                      >{{ getHighestRate(item.product.product_options) }}%</span
+                    >
+                  </div>
+                  <div
+                    class="rate-bar lowest"
+                    :style="{
+                      height: `${
+                        getLowestRate(item.product.product_options) * 20
+                      }px`,
+                    }"
                   >
+                    <span class="rate-value"
+                      >{{ getLowestRate(item.product.product_options) }}%</span
+                    >
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="rate-legend">
-              <span class="highest">최고금리</span>
-              <span class="lowest">최저금리</span>
+              <div class="rate-legend">
+                <span class="highest">최고금리</span>
+                <span class="lowest">최저금리</span>
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- 모달 -->
-        <Teleport to="body">
-          <div v-if="isModalOpen" class="modal-backdrop" @click="closeModal">
-            <div class="modal-container" @click.stop>
-              <div class="modal-header">
-                <h3>상품 상세 정보</h3>
-                <button @click="closeModal" class="modal-close">&times;</button>
+        <!-- 섹션 2 -->
+        <div v-else class="rate-comparison-section-new">
+          <div class="section-header">
+            <h2 class="section-title">금리 비교</h2>
+            <button @click="toggleChartView" class="chart-toggle-button">
+              상품 별 금리 보기
+            </button>
+          </div>
+          <div class="rates-container-new">
+            <div class="bar-container-new">
+              <div class="rate-axis-new">
+                <!-- 8%부터 0%까지 내림차순으로 변경 -->
+                <div
+                  class="rate-label-new"
+                  v-for="value in [8, 6, 4, 2, 0]"
+                  :key="value"
+                >
+                  <div class="rate-label-text">{{ value }}%</div>
+                  <div class="rate-grid-line"></div>
+                </div>
               </div>
-              <div class="modal-body">
-                <ProductDetailView :id="$route.params.id" />
+              <div class="rate-bars-new">
+                <div
+                  v-for="item in userProducts"
+                  :key="item.id"
+                  class="rate-bar-wrapper-new"
+                >
+                  <div class="rate-bar-group-new">
+                    <div
+                      class="rate-bar-new highest-new"
+                      :style="{
+                        height: `${
+                          (getHighestRate(item.product.product_options) / 8) *
+                          90
+                        }%`,
+                      }"
+                    >
+                      <span class="rate-value-new">
+                        {{ getHighestRate(item.product.product_options) }}%
+                      </span>
+                    </div>
+                    <div
+                      class="rate-bar-new lowest-new"
+                      :style="{
+                        height: `${
+                          (getLowestRate(item.product.product_options) / 8) * 90
+                        }%`,
+                      }"
+                    >
+                      <span class="rate-value-new">
+                        {{ getLowestRate(item.product.product_options) }}%
+                      </span>
+                    </div>
+                  </div>
+                  <div class="rate-label-wrapper-new">
+                    <span class="product-title-new">{{
+                      item.product.prdt_name
+                    }}</span>
+                    <span class="bank-name-new">{{
+                      item.product.bank?.bank_name
+                    }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rate-legend-new">
+              <div class="legend-item-new">
+                <div class="legend-color highest-new"></div>
+                <span>최고금리</span>
+              </div>
+              <div class="legend-item-new">
+                <div class="legend-color lowest-new"></div>
+                <span>최저금리</span>
               </div>
             </div>
           </div>
-        </Teleport>
+        </div>
       </div>
+      <!-- 모달 -->
+      <Teleport to="body">
+        <div v-if="isModalOpen" class="modal-backdrop" @click="closeModal">
+          <div class="modal-container" @click.stop>
+            <div class="modal-header">
+              <h3>상품 상세 정보</h3>
+              <button @click="closeModal" class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+              <ProductDetailView :id="$route.params.id" />
+            </div>
+          </div>
+        </div>
+      </Teleport>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch, onUnmounted } from "vue";
+import { ref, computed, onMounted, watch, nextTick } from "vue";
 import { useAccountStore } from "@/stores/account";
 import axios from "axios";
 import { useRouter, useRoute } from "vue-router";
@@ -329,16 +417,46 @@ const isFromRateChart = ref(false);
 // 현재 URL을 저장할 변수 추가
 const previousRoute = ref(null);
 
+const showNewChart = ref(false);
+
+const toggleChartView = () => {
+  showNewChart.value = !showNewChart.value;
+
+  // 다음 틱에서 애니메이션 실행
+  nextTick(() => {
+    // 모든 막대 선택
+    const bars = document.querySelectorAll(".rate-bar, .rate-bar-new");
+
+    // 초기 높이 0으로 설정
+    bars.forEach((bar) => bar.classList.add("initial-height"));
+
+    // 약간의 지연 후 실제 높이로 변경
+    setTimeout(() => {
+      bars.forEach((bar) => bar.classList.remove("initial-height"));
+    }, 50);
+  });
+};
+
+// 상품 금리 데이터 생성
+const productRates = computed(() => {
+  return userProducts.value.map((item) => ({
+    highest: getHighestRate(item.product.product_options),
+    lowest: getLowestRate(item.product.product_options),
+  }));
+});
+
 const showProductDetail = async (productId) => {
   // 현재 URL 저장
   previousRoute.value = router.currentRoute.value.fullPath;
-  
+
   // URL 변경 (실제 네비게이션은 prevent)
-  router.push({ 
-    name: 'productDetail', 
-    params: { id: productId } 
-  }).catch(() => {});  // Navigation prevented 에러 무시
-  
+  router
+    .push({
+      name: "productDetail",
+      params: { id: productId },
+    })
+    .catch(() => {}); // Navigation prevented 에러 무시
+
   // 모달 열기
   isModalOpen.value = true;
 };
@@ -352,12 +470,15 @@ const closeModal = () => {
 };
 
 // 라우트 변경 감시
-watch(() => route.name, (newRouteName) => {
-  // productDetail 라우트로 직접 접근할 때는 모달 닫기
-  if (newRouteName === 'productDetail' && !isModalOpen.value) {
-    isModalOpen.value = false;
+watch(
+  () => route.name,
+  (newRouteName) => {
+    // productDetail 라우트로 직접 접근할 때는 모달 닫기
+    if (newRouteName === "productDetail" && !isModalOpen.value) {
+      isModalOpen.value = false;
+    }
   }
-});
+);
 
 // 최저 금리 계산 함수 추가
 const getLowestRate = (options) => {
@@ -1044,7 +1165,7 @@ onMounted(async () => {
   width: 40px;
   position: relative;
   border-radius: 4px 4px 0 0;
-  transition: height 0.5s ease;
+  transition: height 0.8s ease-out; /* 상승 애니메이션 */
 }
 
 .rate-bar.highest {
@@ -1167,5 +1288,206 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   z-index: 1000;
+}
+
+.rate-comparison-section-new {
+  margin-top: 2rem;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.rate-bar-group-new {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  height: 100%;
+  align-items: flex-end; /* 하단 정렬 */
+}
+
+.rate-bars-new {
+  display: flex;
+  gap: 40px;
+  margin-left: 60px;
+  height: calc(100% - 40px); /* 상단 여백을 제외한 높이 */
+  align-items: flex-end; /* 하단 정렬 */
+}
+
+.rate-bar-wrapper-new {
+  position: relative;
+  height: 100%;
+  width: 120px;
+}
+
+.rates-container-new {
+  margin-left: 30px;
+  margin-right: 30px;
+  margin-top: 1rem;
+}
+
+.bar-container-new {
+  height: 300px;
+  position: relative;
+  display: flex;
+  padding: 20px 0;
+}
+
+.rate-axis-new {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  margin-right: 20px;
+  position: relative;
+  padding-bottom: 20px; /* 하단 여백 추가 */
+}
+
+.rate-label-new {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 40px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.rate-bar-new {
+  width: 40px;
+  position: absolute;
+  bottom: 0; /* 하단에서 시작하도록 설정 */
+  transition: height 0.8s ease-out; /* 상승 애니메이션 */
+  border-radius: 4px 4px 0 0;
+}
+.rate-bar-wrapper-new {
+  position: relative;
+  height: 100%;
+  width: 120px;
+  margin: 0 20px;
+}
+
+.rate-bar-new.highest-new {
+  background-color: #40a2e3;
+}
+
+.rate-bar-new.lowest-new {
+  background-color: #93c6e7;
+}
+
+.rate-label-wrapper-new {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 0 10px;
+}
+
+.rate-value-new {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* ... 기존 스타일 ... */
+
+.rate-label-new {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  height: 40px;
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.rate-label-text {
+  position: absolute;
+  right: 10px;
+  z-index: 2;
+}
+
+.rate-grid-line {
+  position: absolute;
+  left: 100%; /* Y축에서 시작 */
+  right: -800px; /* 충분히 긴 길이 */
+  height: 1px;
+  background-color: #eee;
+}
+
+.rate-bar-new {
+  width: 40px;
+  position: relative;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease;
+}
+
+.rate-legend-new {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.legend-item-new {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+}
+
+.legend-color {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+  border-radius: 50%;
+}
+
+.legend-color.highest-new {
+  background-color: #40a2e3;
+}
+
+.legend-color.lowest-new {
+  background-color: #93c6e7;
+}
+
+.product-title-new {
+  font-weight: bold;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.bank-name-new {
+  font-size: 0.8rem;
+  color: #666;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.chart-toggle-button {
+  padding: 0.5rem 1rem;
+  background-color: #40a2e3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.chart-toggle-button:hover {
+  background-color: #2d8bc7;
+}
+
+/* 초기 높이 클래스 */
+.initial-height {
+  height: 0 !important;
 }
 </style>
