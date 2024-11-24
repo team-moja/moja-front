@@ -9,6 +9,19 @@
             @input="filterBySearch" />
         </div>
 
+        <div class="category-filter mb-3">
+          <h5>카테고리 선택</h5>
+          <div class="btn-group w-100">
+            <button 
+              v-for="category in categories" 
+              :key="category.value" 
+              :class="['btn', 'btn-outline-primary', selectedCategory === category.value ? 'active' : '']" 
+              @click="filterByCategory(category.value)">
+              {{ category.label }}
+            </button>
+          </div>
+        </div>
+
         <div class="bank-filter mb-3">
           <h5>은행 선택</h5>
           <div class="d-flex flex-wrap gap-2 ">
@@ -72,6 +85,11 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 
+const categories = ref([
+  { label: '전체', value: null },
+  { label: '예금', value: 1 },
+  { label: '적금', value: 2 }
+]);
 
 // 필터 데이터
 const banks = ref([
@@ -208,32 +226,36 @@ const banks = ref([
 const selectedBanks = ref([]);
 const searchKeyword = ref('');
 const rateLimit = ref(10); // 최대 이자율
+const selectedCategory = ref(null); // 카테고리 선택 상태
 const productList = ref([]);
 const filteredList = ref([]);
 const router = useRouter();
 
-const moveToDetail = function (productId) {
-    router.push({name: 'productDetail', params: {id: productId}})
-}
+const moveToDetail = (productId) => {
+  router.push({ name: 'productDetail', params: { id: productId } });
+};
 
-const moveToRecommend = function () {
+// 추천 페이지 이동
+const moveToRecommend = () => {
   router.push('/product/recommend');
 };
 
-// 상품명 검색 필터
+// 검색 필터
 const filterBySearch = () => {
   applyFilters();
 };
 
-// 은행 클릭 필터 (다중 선택 지원)
+// 카테고리 필터
+const filterByCategory = (category) => {
+  selectedCategory.value = category;
+  applyFilters();
+};
+
+// 은행 필터
 const filterByBank = (bankName) => {
   if (selectedBanks.value.includes(bankName)) {
-    // 이미 선택된 은행이면 제거
-    selectedBanks.value = selectedBanks.value.filter(
-      (selected) => selected !== bankName
-    );
+    selectedBanks.value = selectedBanks.value.filter((selected) => selected !== bankName);
   } else {
-    // 선택되지 않은 은행이면 추가
     selectedBanks.value.push(bankName);
   }
   applyFilters();
@@ -244,7 +266,7 @@ const filterByRate = () => {
   applyFilters();
 };
 
-// 전체 필터 적용
+// 필터 적용
 const applyFilters = () => {
   filteredList.value = productList.value.filter((product) => {
     const matchesBank =
@@ -258,24 +280,28 @@ const applyFilters = () => {
         ? parseFloat(product.product_options[1].max_intr_rate)
         : parseFloat(product.product_options[0].intr_rate);
     const matchesRate = maxRate <= rateLimit.value;
-    return matchesBank && matchesSearch && matchesRate;
+    const matchesCategory =
+      selectedCategory.value === null || product.product_category === selectedCategory.value;
+    return matchesBank && matchesSearch && matchesRate && matchesCategory;
   });
 };
 
+// 데이터 가져오기
 onMounted(() => {
-  axios({
-    url: 'http://127.0.0.1:8000/finances/product/',
-    method: 'get',
-  })
+  axios.get('http://127.0.0.1:8000/finances/product/')
     .then((res) => {
       productList.value = res.data;
-      filteredList.value = res.data; // 초기값: 전체 표시
+      filteredList.value = res.data; // 초기값
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 });
 </script>
 
 <style scoped>
+.btn-group .btn.active {
+  background-color: #007bff;
+  color: white;
+}
 </style>
