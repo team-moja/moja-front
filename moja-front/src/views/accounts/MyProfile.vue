@@ -130,12 +130,7 @@
             <div class="form-item">
               <label>주거래은행</label>
               <select v-model="editForm.bank">
-                <option
-                  v-for="bank in banks"
-                  :key="bank.id"
-                  :value="bank.id"
-                  :selected="bank.id === editForm.bank"
-                >
+                <option v-for="bank in banks" :key="bank.id" :value="bank.id">
                   {{ bank.bank_name }}
                 </option>
               </select>
@@ -485,6 +480,19 @@ watch(
   }
 );
 
+// userInfo 변경 감시
+watch(
+  userInfo,
+  (newValue) => {
+    if (newValue && newValue.bank) {
+      console.log("userInfo 변경 감지: " + newValue.bank.id);
+      editForm.value.bank = newValue.bank.id;
+      console.log("editForm 업데이트: " + editForm.value.bank);
+    }
+  },
+  { deep: true }
+);
+
 // 최저 금리 계산 함수 추가
 const getLowestRate = (options) => {
   if (!options || !options.length) return 0;
@@ -548,37 +556,37 @@ const banks = ref([
     bank_name: "국민은행",
   },
   {
-    id: 13,
+    id: 12,
     bank_nick: "신한",
     bank_name: "신한은행",
   },
   {
-    id: 14,
+    id: 13,
     bank_nick: "농협",
     bank_name: "농협은행주식회사",
   },
   {
-    id: 15,
+    id: 14,
     bank_nick: "하나",
     bank_name: "하나은행",
   },
   {
-    id: 16,
+    id: 15,
     bank_nick: "케이",
     bank_name: "주식회사 케이뱅크",
   },
   {
-    id: 17,
+    id: 16,
     bank_nick: "수협",
     bank_name: "수협은행",
   },
   {
-    id: 18,
+    id: 17,
     bank_nick: "카카오",
     bank_name: "주식회사 카카오뱅크",
   },
   {
-    id: 19,
+    id: 18,
     bank_nick: "토스",
     bank_name: "토스뱅크 주식회사",
   },
@@ -831,8 +839,21 @@ const hasProducts = computed(() => {
 });
 
 onMounted(async () => {
+  console.log("마운트 시작");
+
   await fetchUserInfo();
+  console.log("fetchUserInfo 완료 후: ", userInfo.value);
+
   await fetchUserProducts();
+  console.log("fetchUserProducts 완료 후");
+
+  if (userInfo.value && userInfo.value.bank) {
+    console.log("userInfo에서 가져온 시점: " + userInfo.value.bank.id); // bank.id로 접근
+    editForm.value.bank = userInfo.value.bank.id; // bank.id로 접근
+    console.log("editForm에서 가져온 시점: " + editForm.value.bank);
+  } else {
+    console.log("userInfo가 비어있거나 undefined입니다");
+  }
 });
 </script>
 
