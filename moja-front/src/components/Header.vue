@@ -45,7 +45,7 @@
             </li>
             <!-- 커뮤니티 -->
             <li class="nav-item">
-              <router-link to="/community" class="nav-link d-flex align-items-center">
+              <router-link to="/help" class="nav-link d-flex align-items-center">
                 <img src="/image/community.png" alt="커뮤니티" class="icon" />
                 <span class="d-lg-none ms-2">커뮤니티</span>
               </router-link>

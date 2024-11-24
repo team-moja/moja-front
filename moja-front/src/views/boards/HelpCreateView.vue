@@ -3,6 +3,17 @@
   <h1 class="help-title">질문 작성</h1>
   <form @submit.prevent="submitHelp" class="create-form">
     <div class="form-group">
+        <label for="category">카테고리</label>
+        <select v-model="category" required class="category-select">
+          <option value="" disabled>카테고리를 선택하세요</option>
+          <option v-for="category in categoryOptions" 
+                  :key="category.value" 
+                  :value="category.value">
+            {{ category.label }}
+          </option>
+        </select>
+      </div>
+    <div class="form-group">
       <label for="title">제목</label>
       <input type="text" v-model="title" required />
     </div>
@@ -22,6 +33,13 @@ import { useRouter } from "vue-router";
 
 const title = ref("");
 const content = ref("");
+const category = ref("");
+const categoryOptions = ref([
+  { label: '도와줘요', value: 'HELP' },
+  { label: '추천해요', value: 'RECOM' },
+  { label: '함께해요', value: 'TOGETHER' }
+]);
+
 const store = useHelpStore();
 const router = useRouter();
 
@@ -30,6 +48,7 @@ const submitHelp = async () => {
     const helpData = {
       help_title: title.value,
       help_content: content.value,
+      help_category: category.value,
     };
     await store.createHelp(helpData);
     router.push({ name: "help-list" });
@@ -49,51 +68,55 @@ const submitHelp = async () => {
 
 .help-title {
   color: #40A2E3;
-  font-size: 2rem;
-  margin-bottom: 2rem;
   text-align: center;
+  margin-bottom: 2rem;
 }
 
 .create-form {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 .form-group {
-  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: #2C7BA8;
+  font-weight: bold;
+  color: #333;
 }
 
 .form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e0e0e0;
+.form-group textarea,
+.category-select {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
 }
 
+.category-select {
+  height: 2.5rem;
+  background-color: white;
+}
+
 .form-group textarea {
-  min-height: 150px;
+  min-height: 200px;
   resize: vertical;
 }
 
 .btn {
   background-color: #40A2E3;
   color: white;
-  padding: 0.5rem 1rem;
+  padding: 0.75rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 1rem;
-  transition: background-color 0.2s;
+  font-weight: bold;
 }
 
 .btn:hover {

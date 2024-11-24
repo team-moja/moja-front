@@ -5,7 +5,7 @@
     <!-- Main Content -->
     <main class="main-content">
       <div class="header-section">
-        <h1 class="board-title">질문 있어요</h1>
+        <h1 class="board-title">커뮤니티</h1>
           <button class="create-btn" @click="goToCreate">글쓰기</button>
       </div>
 
@@ -20,11 +20,11 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
+          <tr class="tr-cell" v-for="help in helps" :key="help.id" @click="goToDetail(help.id)">
             <td>{{ help.id }}</td>
-            <td>질문 있어요</td>
+            <td>{{ getCategoryLabel(help.help_category) }}</td>
             <td>{{ help.user }}</td>
-            <td class="title-cell">
+            <td>
                 {{ help.help_title }}
             </td>
             <td>{{ formatDate(help.help_date) }}</td>
@@ -90,6 +90,18 @@ const formatDate = (date) => {
   if (!date) return '';
   return date.split('T')[0];
 };
+
+// 카테고리 매핑 객체
+const categoryMapping = {
+  'HELP': '도와줘요',
+  'RECOM': '추천해요',
+  'TOGETHER': '함께해요'
+};
+
+const getCategoryLabel = (category) => {
+  return categoryMapping[category] || category;
+};
+
 </script>
 
 <style scoped>
@@ -103,8 +115,11 @@ const formatDate = (date) => {
 
 .page-container {
   min-height: 100vh;
-  display: flex;
+  /* display: flex; */
   flex-direction: column;
+  max-width: 1200px; /* 너비 제한 추가 */
+  margin: 0 auto; /* 가운데 정렬을 위한 margin 추가 */
+  padding: 0 1rem; /* 좌우 여백 추가 */
 }
 
 .header {
@@ -157,11 +172,12 @@ const formatDate = (date) => {
 }
 
 .main-content {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1rem;
   flex-grow: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
 }
+
 
 .board-title {
   color: #40A2E3;
@@ -211,7 +227,7 @@ const formatDate = (date) => {
   text-decoration: none;
 }
 
-.title-cell a:hover {
+.tr-cell:hover {
   color: #40A2E3;
   /* text-decoration: solid underline #40A2e3 4px; */
 }
