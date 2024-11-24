@@ -51,7 +51,8 @@ const goToCreate = function () {
   if (accountStore.token === '') {
     Swal.fire({
       title: '로그인 필요',
-      text: '로그인을 해야 질문을 남길 수 있어요!.',
+      text: '로그인을 해야 질문을 남길 수 있어요!',
+      timer: 1500,
       icon: 'error', // success, error, warning, info
       confirmButtonText: '확인',
       customClass: {
@@ -66,7 +67,8 @@ const goToDetail = function (helpId) {
   if (accountStore.token === '') {
     Swal.fire({
       title: '로그인 필요',
-      text: '로그인을 해야 게시글을 볼 수 있어요!.',
+      text: '로그인을 해야 게시글을 볼 수 있어요!',
+      timer: 1500,
       icon: 'error', // success, error, warning, info
       confirmButtonText: '확인',
       customClass: {

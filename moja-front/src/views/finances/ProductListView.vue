@@ -83,6 +83,7 @@ import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
 import { useAccountStore } from '@/stores/account';
+import Swal from 'sweetalert2';
 
 const accountStote = useAccountStore()
 
@@ -233,7 +234,20 @@ const filteredList = ref([]);
 const router = useRouter();
 
 const moveToDetail = (productId) => {
-  router.push({ name: 'productDetail', params: { id: productId } });
+  if (accountStote.token === '') {
+    Swal.fire({
+      title: '로그인 필요',
+      text: '로그인을 해야 예적금 정보를 볼 수 있어요 😥',
+      icon: 'error', // success, error, warning, info
+      confirmButtonText: '확인',
+      timer: 1500,
+      customClass: {
+        confirmButton: 'custom-warrning-button', // 버튼에 커스텀 클래스 추가
+      },
+    });
+  } else {
+    router.push({ name: 'productDetail', params: { id: productId } });
+  }
 };
 
 
@@ -241,7 +255,6 @@ const moveToDetail = (productId) => {
 
 // 제목과 텍스트 추가
 // 추천 페이지 이동
-import Swal from 'sweetalert2';
 
 const moveToRecommend = () => {
   if (accountStote.token === '') {
@@ -250,6 +263,7 @@ const moveToRecommend = () => {
       text: '로그인을 해야 예적금 추천을 받을 수 있습니다.',
       icon: 'error', // success, error, warning, info
       confirmButtonText: '확인',
+      timer: 1500,
       customClass: {
         confirmButton: 'custom-warning-button', // 버튼에 커스텀 클래스 추가
       },

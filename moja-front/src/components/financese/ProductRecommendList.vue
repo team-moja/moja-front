@@ -82,7 +82,7 @@
               <div class="accordion-body">
                 <p><strong>금리:</strong> {{ getProductRates(product) }}</p>
                 <p><strong>가입 방법:</strong> {{ product.join_way || "정보 없음" }}</p>
-                <p><strong>기타 정보:</strong> {{ product.etc_note || "정보 없음" }}</p>
+                <p><strong>기타 정보:</strong> {{ product.mtrt_int || "정보 없음" }}</p>
               </div>
             </div>
           </div>
@@ -125,7 +125,7 @@
               <div class="accordion-body">
                 <p><strong>금리:</strong> {{ getProductRates(product) }}</p>
                 <p><strong>가입 방법:</strong> {{ product.join_way || "정보 없음" }}</p>
-                <p><strong>기타 정보:</strong> {{ product.etc_note || "정보 없음" }}</p>
+                <p><strong>기타 정보:</strong> {{ product.mtrt_int || "정보 없음" }}</p>
               </div>
             </div>
           </div>
@@ -147,6 +147,22 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useFinanceStore } from "@/stores/finance";
+import Swal from 'sweetalert2';
+
+Swal.fire({
+      title: '상품 추천',
+      html: `
+    🤩 뭘 좋아할지 몰라 여러 종류를 준비했어요 🤩<br> <br>
+    여러 상품을 확인 후 비교하기로 넘어가볼까요?
+  `,
+      icon: 'info', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-info-button', // 버튼에 커스텀 클래스 추가
+      },
+      timer: 2000, // 1초 후에 자동으로 닫힘
+  // showConfirmButton: false, // 확인 버튼 숨기기
+    })
 
 const router = useRouter();
 const financeStore = useFinanceStore();
@@ -185,7 +201,17 @@ const toggleSelection = (product) => {
   } else if (selectedProducts.value.length < 3) {
     selectedProducts.value.push(product);
   } else {
-    alert("최대 3개의 상품만 선택할 수 있습니다.");
+    Swal.fire({
+      title: '정보',
+      text: '최대 3개의 상품만 비교할 수 있어요!',
+      icon: 'info', // success, error, warning, info
+      confirmButtonText: '확인',
+      customClass: {
+        confirmButton: 'custom-info-button', // 버튼에 커스텀 클래스 추가
+      },
+      timer: 1500, // 1초 후에 자동으로 닫힘
+  // showConfirmButton: false, // 확인 버튼 숨기기
+    })
   }
 };
 
