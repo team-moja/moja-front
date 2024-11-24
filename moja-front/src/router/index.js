@@ -14,54 +14,69 @@ import HomeView from '@/views/boards/HomeView.vue'
 import CommunityView from '@/views/boards/CommunityView.vue'
 import MyProfile from '@/views/accounts/MyProfile.vue'  // 마이페이지 프로필
 import { useAccountStore } from '@/stores/account'
+
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
-      path: '/',
-      name: 'home',
+      path: "/",
+      name: "home",
       component: HomeView,
     },
     {
-      path: '/help',
-      name: 'help-list',
+      path: "/help",
+      name: "help-list",
       component: HelpListView,
     },
     {
-      path: '/help/create',
-      name: 'help-create',
+      path: "/help/create",
+      name: "help-create",
       component: HelpCreateView,
       meta: { requiresAuth: true }
     },
     {
-      path: '/help/:id',
-      name: 'help-detail',
+      path: "/help/:id",
+      name: "help-detail",
       component: HelpDetailView,
       props: true,
       meta: { requiresAuth: true }
     },
 
     {
-      path: '/account/signin',
-      name: 'signin',
+      path: "/account/signin",
+      name: "signin",
       component: SigninView,
     },
 
+    // 금리 비교 차트에서의 routing
+    {
+      path: "/mypage",
+      name: "myProfile",
+      component: MyProfile,
+      children: [
+        {
+          path: "product/:id", // 모달용 별도 라우트
+          name: "productDetailModal",
+          component: ProductDetailView,
+          props: true,
+        },
+      ],
+    },
 
     {
-      path: '/product',
-      name: 'product',
+      path: "/product",
+      name: "product",
       component: ProductListView,
     },
     {
-      path: '/product/:id',
-      name: 'productDetail',
+      path: "/product/:id",
+      name: "productDetail",
       component: ProductDetailView,
       meta: { requiresAuth: true }
     },
     {
-      path: '/product/recommend',
-      name: 'productRecommend',
+      path: "/product/recommend",
+      name: "productRecommend",
       component: ProductRecommendView,
       meta: { requiresAuth: true }
     },
@@ -71,33 +86,34 @@ const router = createRouter({
       component: ProductComparisonView,
     },
     {
-      path: '/product/recommend/result',
-      name: 'productRecommendResult',
+      path: "/product/recommend/result",
+      name: "productRecommendResult",
       component: ProductRecommendResultView,
     },
     {
-      path: '/exchange',
-      name: 'exchange',
+      path: "/exchange",
+      name: "exchange",
       component: MoneyChangeView,
     },
     {
-      path: '/map',
-      name: 'map',
+      path: "/map",
+      name: "map",
       component: BankMapView,
     },
     {
-      path: '/community',
-      name: 'community',
-      component: CommunityView
+      path: "/community",
+      name: "community",
+      component: CommunityView,
     },
     {
-      path: '/profile',
-      name: 'profile',
+      path: "/profile",
+      name: "profile",
       component: MyProfile,
       meta: { requiresAuth: true }
     },
   ],
-})
+});
+
 
 import Swal from 'sweetalert2';
 
@@ -122,5 +138,4 @@ router.beforeEach((to, from, next) => {
   next() // 다음 페이지로 이동
 })
 
-export default router
-
+export default router;
