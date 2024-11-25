@@ -81,32 +81,34 @@
         </div>
 
         <div class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment">
-            <div v-if="editingCommentId !== comment.id">
-              <div class="comment-header">
-                <span class="comment-author">{{ comment.user }}</span>
-                <span class="comment-date">
-                  {{ formatDate(comment.help_comment_date) }}
-                </span>
-              </div>
-              <p class="comment-content">{{ comment.help_comment_content }}</p>
-              <div v-if="comment.is_author" class="comment-actions">
-                <img 
-                  @click="startEditComment(comment)" 
-                  src="@/assets/images/boards/put.png" 
-                  alt="수정" 
-                  class="action-icon"
-                >
-                <img 
-                  @click="deleteComment(comment.id)" 
-                  src="@/assets/images/boards/delete.png" 
-                  alt="삭제" 
-                  class="action-icon"
-                >
-                </div>
-              </div>
+    <div v-for="comment in comments" :key="comment.id" class="comment">
+      <div v-if="editingCommentId !== comment.id">
+        <div class="comment-header">
+          <h3 class="comment-content">{{ comment.help_comment_content }}</h3>
+          <div class="comment-meta">
+            <div class="comment-info">
+              <span class="comment-author">{{ comment.user }}</span>
+              <span class="comment-date">{{ formatDate(comment.help_comment_date) }}</span>
+            </div>
           </div>
         </div>
+        <div v-if="comment.is_author" class="comment-actions">
+          <img 
+            @click="startEditComment(comment)" 
+            src="@/assets/images/boards/put.png" 
+            alt="수정" 
+            class="action-icon"
+          >
+          <img 
+            @click="deleteComment(comment.id)" 
+            src="@/assets/images/boards/delete.png" 
+            alt="삭제" 
+            class="action-icon"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
   </div>
@@ -489,6 +491,9 @@ window.onbeforeunload = function() {
 
 .comment-form {
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .comment-form textarea {
@@ -506,19 +511,26 @@ window.onbeforeunload = function() {
 }
 
 .comment {
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   border-bottom: 1px solid #eee;
 }
 
 .comment-header {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 0.5rem;
+}
+
+.comment-meta {
+  margin-bottom: 1rem;
+}
+
+.comment-info {
+  display: flex;
+  gap: 2rem;
+  color: #666;
 }
 
 .comment-author {
   font-weight: bold;
-  color: #40a2e3;
 }
 
 .comment-date {
@@ -527,8 +539,9 @@ window.onbeforeunload = function() {
 }
 
 .comment-content {
-  color: #444;
-  line-height: 1.4;
+  color: #40a2e3;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
 }
 
 .author-info {
