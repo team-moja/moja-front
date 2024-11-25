@@ -20,7 +20,8 @@
             </button>
           </div>
         </div>
-        <p class="content">{{ help?.help_content }}</p>
+        <!-- <p class="content">{{ help?.help_content }}</p> -->
+        <p class="content" style="white-space: pre-line">{{ help?.help_content }}</p>
 
         <!-- 작성자만 보이는 수정/삭제 버튼 -->
         <div v-if="isAuthor" class="author-actions">
@@ -421,8 +422,8 @@ window.onbeforeunload = function() {
 }
 
 .content {
-  margin-bottom: 2rem;
-  line-height: 1.6;
+  white-space: pre-line;
+  word-break: break-word;
 }
 
 .like-btn {
