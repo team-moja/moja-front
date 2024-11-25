@@ -44,7 +44,7 @@
       <div class="col-md-9 content-field">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2>예/적금 목록</h2>
-          <button class="btn btn-primary" @click="moveToRecommend">예적금 추천</button>
+          <!-- <button class="btn btn-primary" @click="moveToRecommend">예적금 추천</button> -->
         </div>
 
         <div class="row g-4">
@@ -95,7 +95,6 @@ const categories = ref([
 
 // 필터 데이터
 const banks = ref([
-  
   {
     "id": 1,
     "bank_nick": "우리",
