@@ -133,6 +133,18 @@ const router = createRouter({
       component: CardRecommendResultView,
     },
   ],
+  // 스크롤 동작 추가
+  scrollBehavior(to, from, savedPosition) {
+    // 모든 라우트 이동시 페이지 최상단으로 스크롤
+    // return { top: 0 }
+    if (savedPosition) {
+      // 브라우저의 뒤로/앞으로 버튼을 사용할 때는 저장된 위치로 이동
+      return savedPosition
+    } else {
+      // 새로운 페이지로 이동할 때는 맨 위로 스크롤
+      return { top: 0 }
+    }
+  }
 });
 
 

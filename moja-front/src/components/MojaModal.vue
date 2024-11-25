@@ -2,7 +2,7 @@
   <!-- 고정된 모자 아이콘 -->
   <div class="fixed-cap-icon">
     <img
-      src="/image/cap.png"
+      src="/src/assets/images/boards/cap.png"
       alt="모자 아이콘"
       class="cap-icon"
       @click="toggleModal"

@@ -194,39 +194,34 @@ const banks = ref([
     "bank_url": "http://www.shinhan.com"
   },
   {
+    "id": 12,
+    "bank_nick": "신한",
+    "bank_name": "신한은행",
+  },
+  {
     "id": 13,
     "bank_nick": "농협",
     "bank_name": "농협은행주식회사",
-    "bank_code": "0013175",
-    "bank_url": "https://banking.nonghyup.com"
   },
   {
     "id": 14,
     "bank_nick": "하나",
     "bank_name": "하나은행",
-    "bank_code": "0013909",
-    "bank_url": "http://www.hanabank.com"
   },
   {
     "id": 15,
     "bank_nick": "케이",
     "bank_name": "주식회사 케이뱅크",
-    "bank_code": "0014674",
-    "bank_url": "https://www.kbanknow.com"
   },
   {
     "id": 16,
     "bank_nick": "수협",
     "bank_name": "수협은행",
-    "bank_code": "0014807",
-    "bank_url": "http://www.suhyup-bank.com"
   },
   {
     "id": 17,
     "bank_nick": "카카오",
     "bank_name": "주식회사 카카오뱅크",
-    "bank_code": "0015130",
-    "bank_url": "https://www.kakaobank.com/"
   },
   {
     "id": 18,
