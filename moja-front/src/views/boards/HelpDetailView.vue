@@ -23,7 +23,7 @@
         <p class="content">{{ help?.help_content }}</p>
 
         <!-- 작성자만 보이는 수정/삭제 버튼 -->
-        <div v-if="help?.is_author" class="author-actions">
+        <div v-if="isAuthor" class="author-actions">
           <button @click="startEditPost" class="btn edit-btn">수정</button>
           <button @click="deletePost" class="btn delete-btn">삭제</button>
         </div>
@@ -100,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useAccountStore } from "@/stores/account";
@@ -156,7 +156,7 @@ const savePostEdit = async () => {
         }
       }
     );
-    help.value = response.data;
+    help.value = { ...response.data, is_author: true };
     editingPost.value = false;
   } catch (error) {
     console.error("게시글 수정 실패:", error);
@@ -217,7 +217,7 @@ const formatDate = (date) => {
   if (!date) return "";
   return date.split("T")[0];
 };
-const isAuthor = ref(false);
+const isAuthor = computed(() => help.value?.is_author || false);
 const isCommentAuthor = (comment) => comment.user_id === accountStore.userId;
 
 
