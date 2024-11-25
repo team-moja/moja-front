@@ -111,11 +111,18 @@ const router = createRouter({
       component: MyProfile,
       meta: { requiresAuth: true }
     },
+
+    {
+      path: "/card",
+      name: "cardList",
+      component: CardListView,
+    },
   ],
 });
 
 
 import Swal from 'sweetalert2';
+import CardListView from '@/views/cards/CardListView.vue'
 
 router.beforeEach((to, from, next) => {
   const accountStore = useAccountStore()
