@@ -19,7 +19,7 @@
           </div>
           <div class="banner-image">
             <img
-              src="/image/mainmoney.png"
+              src="/src/assets/images/boards/mainmoney.png"
               alt="메인 이미지"
               class="main-money-image"
             />
@@ -34,6 +34,7 @@
       <div class="bottom-container">
       <!-- HOT 게시글 -->
       <div class="hot-posts-section">
+        <div class="cap-decoration"></div>
         <h2 class="section-title">🔥 HOT 게시글</h2>
         <div class="post-list">
           <div
@@ -292,6 +293,7 @@ const goToProductRecommend = function () {
   border: 1px solid #e9ecef;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
+  background: #f8f9fa;
 }
 
 .post-item:hover {
@@ -444,8 +446,8 @@ const goToProductRecommend = function () {
 }
 
 .cap-icon {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -591,8 +593,8 @@ const goToProductRecommend = function () {
   }
 
   .cap-icon {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
   }
 
   .modal-content {
@@ -714,5 +716,27 @@ const goToProductRecommend = function () {
 
 .map-modal-footer {
   text-align: right;
+}
+
+.hot-posts-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: visible;
+}
+
+.cap-decoration {
+  position: absolute;
+  top: -45px;
+  left: -12px;
+  width: 70px;
+  height: 70px;
+  background-image: url('@/assets/images/boards/cap_reverse.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(-13deg);
+  z-index: 1;
 }
 </style>
