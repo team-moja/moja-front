@@ -2,30 +2,47 @@
   <div class="help-container">
     <div class="help-detail">
       <div v-if="!editingPost">
-        <div class="help-header">
+
+        <!-- 제목 및 작성자 정보 -->
+        <div class="post-header">
           <h1>{{ help?.help_title }}</h1>
+          <div class="post-meta">
+            <div class="author-info">
+              <span class="author">작성자: {{ help?.user?.nickname }}</span>
+              <span class="date">작성일: {{ formatDate(help?.help_date) }}</span>
+            </div>
+            <button
+            @click="toggleLike"
+            class="like-btn"
+            :class="{ liked: isLiked }"
+          >
+            ❤️ {{ likeCount }}
+          </button>
+          </div>
+        <div class="top-navigation">
           <router-link to="/help">
             <button class="btn back-btn">목록으로 돌아가기</button>
           </router-link>
-        </div>
-        <div class="post-info">
-          <span>작성일: {{ formatDate(help?.help_date) }}</span>
-          <div class="like-section">
-            <button
-              @click="toggleLike"
-              class="like-btn"
-              :class="{ liked: isLiked }"
+          <div v-if="isAuthor" class="author-actions">
+            <img 
+              @click="startEditPost" 
+              src="@/assets/images/boards/put.png" 
+              alt="수정" 
+              class="action-icon"
             >
-              ❤️ {{ likeCount }}
-            </button>
+            <img 
+              @click="deletePost" 
+              src="@/assets/images/boards/delete.png" 
+              alt="삭제" 
+              class="action-icon"
+            >
           </div>
         </div>
-        <p class="content">{{ help?.help_content }}</p>
+        </div>
 
-        <!-- 작성자만 보이는 수정/삭제 버튼 -->
-        <div v-if="help?.is_author" class="author-actions">
-          <button @click="startEditPost" class="btn edit-btn">수정</button>
-          <button @click="deletePost" class="btn delete-btn">삭제</button>
+        <!-- 본문 내용 -->
+        <div class="post-content">
+          <p class="content" style="white-space: pre-line">{{ help?.help_content }}</p>
         </div>
       </div>
 
@@ -64,43 +81,42 @@
         </div>
 
         <div class="comments-list">
-          <div v-for="comment in comments" :key="comment.id" class="comment">
-            <!-- 댓글 수정 모드가 아닐 때 -->
-            <div v-if="editingCommentId !== comment.id">
-              <div class="comment-header">
-                <span class="comment-author">{{ comment.user }}</span>
-                <span class="comment-date">
-                  {{ formatDate(comment.help_comment_date) }}
-                </span>
-              </div>
-              <p class="comment-content">{{ comment.help_comment_content }}</p>
-              <div v-if="comment.is_author" class="comment-actions">
-                <button @click="startEditComment(comment)" class="btn edit-btn-sm">수정</button>
-                <button @click="deleteComment(comment.id)" class="btn delete-btn-sm">삭제</button>
-              </div>
-            </div>
-            
-            <!-- 댓글 수정 모드일 때 -->
-            <div v-else class="comment-edit-form">
-              <textarea
-                v-model="editedCommentContent"
-                rows="3"
-                class="edit-comment-textarea"
-              ></textarea>
-              <div class="edit-comment-actions">
-                <button @click="saveCommentEdit(comment.id)" class="btn save-btn-sm">저장</button>
-                <button @click="cancelCommentEdit" class="btn cancel-btn-sm">취소</button>
-              </div>
+    <div v-for="comment in comments" :key="comment.id" class="comment">
+      <div v-if="editingCommentId !== comment.id">
+        <div class="comment-header">
+          <h3 class="comment-content">{{ comment.help_comment_content }}</h3>
+          <div class="comment-meta">
+            <div class="comment-info">
+              <span class="comment-author">{{ comment.user.nickname }}</span>
+              <span class="comment-date">{{ formatDate(comment.help_comment_date) }}</span>
             </div>
           </div>
         </div>
+        <div v-if="comment.is_author" class="comment-actions">
+          <img 
+            @click="startEditComment(comment)" 
+            src="@/assets/images/boards/put.png" 
+            alt="수정" 
+            class="action-icon"
+          >
+          <img 
+            @click="deleteComment(comment.id)" 
+            src="@/assets/images/boards/delete.png" 
+            alt="삭제" 
+            class="action-icon"
+          >
+        </div>
+      </div>
+    </div>
+  </div>
       </div>
     </div>
   </div>
 </template>
 
+
 <script setup>
-import { ref, computed, onMounted } from "vue";
+import { ref, computed, onMounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import { useAccountStore } from "@/stores/account";
@@ -156,7 +172,7 @@ const savePostEdit = async () => {
         }
       }
     );
-    help.value = response.data;
+    help.value = { ...response.data, is_author: true };
     editingPost.value = false;
   } catch (error) {
     console.error("게시글 수정 실패:", error);
@@ -217,7 +233,7 @@ const formatDate = (date) => {
   if (!date) return "";
   return date.split("T")[0];
 };
-const isAuthor = ref(false);
+const isAuthor = computed(() => help.value?.is_author || false);
 const isCommentAuthor = (comment) => comment.user_id === accountStore.userId;
 
 
@@ -361,8 +377,8 @@ window.onbeforeunload = function() {
 <style scoped>
 .help-container {
   max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
 }
 
 .help-header {
@@ -389,7 +405,34 @@ window.onbeforeunload = function() {
 .help-detail p {
   color: #444;
   line-height: 1.6;
+  /* margin-bottom: 2rem; */
+}
+
+.top-navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  align-items: end;
+  /* margin-bottom: 2rem; */
+}
+
+/* 제목 및 작성자 정보 */
+.post-header {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 1.5rem;
   margin-bottom: 2rem;
+}
+
+.post-header h1 {
+  font-size: 2rem;
+  color: #40a2e3;
+  margin-bottom: 1rem;
+}
+
+.post-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .btn {
@@ -399,7 +442,7 @@ window.onbeforeunload = function() {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.8rem;
   transition: background-color 0.2s;
 }
 
@@ -408,7 +451,7 @@ window.onbeforeunload = function() {
 }
 
 .back-btn {
-  margin-top: 1rem;
+  margin-top: 0.5rem;
   display: inline-block;
 }
 
@@ -421,15 +464,16 @@ window.onbeforeunload = function() {
 }
 
 .content {
-  margin-bottom: 2rem;
-  line-height: 1.6;
+  white-space: pre-line;
+  word-break: break-word;
 }
 
 .like-btn {
-  padding: 0.5rem 1rem;
-  border: 1px solid #40a2e3;
+  padding: 0.3rem 0.6rem;
+  border: 2px solid white;
   border-radius: 20px;
   background: white;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -447,6 +491,9 @@ window.onbeforeunload = function() {
 
 .comment-form {
   margin-bottom: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .comment-form textarea {
@@ -464,19 +511,26 @@ window.onbeforeunload = function() {
 }
 
 .comment {
-  padding: 1rem 0;
+  padding: 1.5rem 0;
   border-bottom: 1px solid #eee;
 }
 
 .comment-header {
-  display: flex;
-  justify-content: space-between;
   margin-bottom: 0.5rem;
+}
+
+.comment-meta {
+  margin-bottom: 1rem;
+}
+
+.comment-info {
+  display: flex;
+  gap: 2rem;
+  color: #666;
 }
 
 .comment-author {
   font-weight: bold;
-  color: #40a2e3;
 }
 
 .comment-date {
@@ -485,8 +539,14 @@ window.onbeforeunload = function() {
 }
 
 .comment-content {
-  color: #444;
-  line-height: 1.4;
+  color: #40a2e3;
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.author-info {
+  display: flex;
+  gap: 2rem;
 }
 
 .author-actions {
@@ -495,33 +555,22 @@ window.onbeforeunload = function() {
   gap: 1rem;
 }
 
-.edit-btn, .edit-btn-sm {
-  background-color: #4CAF50;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
+.action-icon {
+  width: 24px;
+  height: 24px;
   cursor: pointer;
+  transition: opacity 0.2s;
 }
 
-.delete-btn, .delete-btn-sm {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.edit-btn-sm, .delete-btn-sm {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
+.action-icon:hover {
+  opacity: 0.7;
 }
 
 .comment-actions {
   margin-top: 0.5rem;
   display: flex;
   gap: 0.5rem;
+  justify-content: flex-end;  /* 오른쪽 정렬 */
 }
 
 .login-message {
@@ -531,11 +580,11 @@ window.onbeforeunload = function() {
 }
 
 .btn {
+  padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
-  padding: 0.5rem 1rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .btn:hover {
@@ -571,7 +620,7 @@ window.onbeforeunload = function() {
 }
 
 .save-btn {
-  background-color: #4CAF50;
+  background-color: #288745;
   color: white;
 }
 
@@ -596,6 +645,29 @@ window.onbeforeunload = function() {
 .edit-comment-actions {
   display: flex;
   gap: 0.5rem;
+}
+
+.author {
+  color: #666;
+  font-weight: bold;
+  margin: 0;
+}
+
+.date {
+  color: #666;
+}
+
+.edit-btn-sm, .delete-btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+}
+
+.action-icon[src*="put"]:hover {
+  filter: invert(24%) sepia(97%) saturate(431%) hue-rotate(90deg) brightness(92%) contrast(89%);
+}
+
+.action-icon[src*="delete"]:hover {
+  filter: invert(40%) sepia(89%) saturate(2526%) hue-rotate(338deg) brightness(90%) contrast(111%);
 }
 
 </style>
