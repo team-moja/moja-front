@@ -9,40 +9,45 @@
           <button class="create-btn" @click="goToCreate">글쓰기</button>
       </div>
 
-      <!-- 카테고리 필터 추가 -->
-      <div class="category-filter mb-3">
-        <div class="btn-group w-100">
-          <button v-for="category in categories" 
-                  :key="category.value"
-                  :class="['filter-btn', selectedCategory === category.value ? 'active' : '']"
-                  @click="filterByCategory(category.value)">
+      <!-- 카테고리 필터를 테이블 형식으로 변경 -->
+      <table class="category-table">
+        <tr>
+          <td 
+            v-for="category in categories" 
+            :key="category.value"
+            :class="['category-cell', selectedCategory === category.value ? 'active' : '']"
+            @click="filterByCategory(category.value)"
+          >
             {{ category.label }}
-          </button>
-        </div>
-      </div>
-
-      <table class="board-table">
-        <thead>
-          <tr>
-            <th>No</th>
-            <th>카테고리</th>
-            <th>닉네임</th>
-            <th>제목</th>
-            <th>작성 날짜</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="tr-cell" v-for="help in filteredHelps" :key="help.id" @click="goToDetail(help.id)">
-            <td>{{ help.id }}</td>
-            <td>{{ getCategoryLabel(help.help_category) }}</td>
-            <td>{{ help.user.nickname }}</td>
-            <td>{{ help.help_title }}</td>
-            <td>{{ formatDate(help.help_date) }}</td>
-          </tr>
-        </tbody>
+          </td>
+        </tr>
       </table>
-    </main>
 
+      <div class="table-container">
+        <table class="board-table">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>카테고리</th>
+              <th>제목</th>
+              <th>닉네임</th>
+              <th>작성 날짜</th>
+              <th>❤</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="tr-cell" v-for="help in filteredHelps" :key="help.id" @click="goToDetail(help.id)">
+              <td>{{ help.id }}</td>
+              <td>{{ getCategoryLabel(help.help_category) }}</td>
+              <td>{{ help.help_title }}</td>
+              <td>{{ help.user.nickname }}</td>
+              <td>{{ formatDate(help.help_date) }}</td>
+              <td>{{ help.like_count }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
   </div>
 </template>
 
@@ -155,6 +160,40 @@ const filterByCategory = (category) => {
   padding: 0 1rem; /* 좌우 여백 추가 */
 }
 
+.table-container {
+  min-height: 400px; /*테이블 최소 높이 */
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.category-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin-bottom: 1rem;
+  table-layout: fixed;
+}
+
+.category-cell {
+  width: 25%; /* 4개의 카테고리가 균등하게 분할 */
+  padding: 0.8rem;
+  text-align: center;
+  background-color: white;
+  border: 1px solid #40A2E3;
+  color: #40A2E3;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.category-cell:hover {
+  background-color: #e8f4ff;
+}
+
+.category-cell.active {
+  background-color: #40A2E3;
+  color: white;
+}
+
 .header {
   background-color: white;
   padding: 1rem 2rem;
@@ -236,24 +275,77 @@ const filterByCategory = (category) => {
 .board-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 1rem;
+  table-layout: fixed; /* 컬럼 너비 고정 */
+  border: 1px solid #eee;
 }
 
 .board-table th,
 .board-table td {
+  /* border: 1px solid #eee; /* 모든 셀에 테두리 추가 */
   padding: 1rem;
-  border-bottom: 1px solid #eee;
   text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .board-table th {
   background-color: #f8f9fa;
   font-weight: 600;
+  border-bottom: 2px solid #eee;
 }
 
-.title-cell {
-  text-align: left;
+/* 컬럼별 너비 조정 */
+.board-table th:nth-child(1),
+.board-table td:nth-child(1) {
+  width: 7%;
+  text-align: center;
 }
+
+.board-table th:nth-child(2),
+.board-table td:nth-child(2) {
+  width: 12%;
+  text-align: center;
+}
+
+.board-table th:nth-child(3),
+.board-table td:nth-child(3) {
+  width: 38%;
+  text-align: center;
+}
+
+.board-table th:nth-child(4) {
+  width: 17%;
+  text-align: center;
+  /* padding-left: 1.5rem; */
+}
+
+.board-table td:nth-child(4) {
+  width: 15%;
+  text-align: center;
+  /* padding-left: 1.5rem; */
+}
+
+.board-table th:nth-child(5),
+.board-table td:nth-child(5) {
+  width: 20%;
+  text-align: center;
+}
+
+.board-table th:nth-child(6),
+.board-table td:nth-child(6) {
+  width:10%;
+  text-align: center;
+}
+
+.tr-cell {
+  cursor: pointer;
+}
+
+.tr-cell:hover {
+  color: #40A2E3;
+}
+
 
 .title-cell a {
   color: inherit;
@@ -269,12 +361,7 @@ const filterByCategory = (category) => {
   margin-bottom: 2rem;
 }
 
-.btn-group {
-  display: flex;
-  gap: 1rem;
-}
-
-.filter-btn {
+/* .filter-btn {
   flex: 1;
   padding: 0.5rem 1rem;
   border: 1px solid #40A2E3;
@@ -283,7 +370,7 @@ const filterByCategory = (category) => {
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
-}
+} */
 
 .filter-btn:hover {
   background-color: #e8f4ff;

@@ -2,7 +2,12 @@
   <div class="help-container">
     <div class="help-detail">
       <div v-if="!editingPost">
-        <h1>{{ help?.help_title }}</h1>
+        <div class="help-header">
+          <h1>{{ help?.help_title }}</h1>
+          <router-link to="/help">
+            <button class="btn back-btn">목록으로 돌아가기</button>
+          </router-link>
+        </div>
         <div class="post-info">
           <span>작성일: {{ formatDate(help?.help_date) }}</span>
           <div class="like-section">
@@ -90,10 +95,6 @@
           </div>
         </div>
       </div>
-
-      <router-link to="/help">
-        <button class="btn back-btn">목록으로 돌아가기</button>
-      </router-link>
     </div>
   </div>
 </template>
@@ -362,6 +363,14 @@ window.onbeforeunload = function() {
   max-width: 800px;
   margin: 0 auto;
   padding: 2rem;
+}
+
+.help-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4rem;
+  margin-bottom: 4rem;
 }
 
 .help-detail {
