@@ -19,7 +19,7 @@
           </div>
           <div class="banner-image">
             <img
-              src="/image/mainmoney.png"
+              src="/src/assets/images/boards/mainmoney.png"
               alt="메인 이미지"
               class="main-money-image"
             />
@@ -34,6 +34,7 @@
       <div class="bottom-container">
       <!-- HOT 게시글 -->
       <div class="hot-posts-section">
+        <div class="cap-decoration"></div>
         <h2 class="section-title">🔥 HOT 게시글</h2>
         <div class="post-list">
           <div
@@ -45,7 +46,8 @@
           >
             <div class="post-content">
               <span class="post-badge">👑 TOP{{ index + 1 }}</span>
-              <p class="post-text">{{ post.help_title }}</p>
+              <p class="hot-title">{{ post.help_title }}</p>
+              <p class="hot-content">{{ post.help_content }}</p>
             </div>
             <div class="post-stats">
               <span>❤️ {{ post.like_count }}</span>
@@ -152,7 +154,7 @@ const goToProductRecommend = function () {
   if (accountStore.token === "") {
     Swal.fire({
       title: "로그인 필요",
-      text: "로그인을 안하신거같아요!",
+      text: "로그인을 안 하신 것 같아요!",
       icon: "error", // success, error, warning, info
       confirmButtonText: "확인",
       timer: 1500,
@@ -285,12 +287,13 @@ const goToProductRecommend = function () {
 .post-item {
   background: #ffffff;
   border-radius: 12px;
-  padding: 1.25rem;
+  padding: 0.25rem;
   margin-bottom: 0.5rem;
   transition: all 0.3s ease;
   border: 1px solid #e9ecef;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   position: relative;
+  background: #f8f9fa;
 }
 
 .post-item:hover {
@@ -299,15 +302,11 @@ const goToProductRecommend = function () {
   border-color: #40A2E3;
 }
 
-.post-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
 
 .post-badge {
   background: linear-gradient(135deg, #40A2E3, #5fb8ff);
   color: white;
+  margin: 0.4rem 0.4rem;
   padding: 0.4rem 0.8rem;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -316,8 +315,14 @@ const goToProductRecommend = function () {
   box-shadow: 0 2px 4px rgba(64, 162, 227, 0.2);
 }
 
-.post-text {
-  font-size: 1.3rem;
+.post-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.hot-title {
+  font-size: 1.2rem;
   color: #2c3e50;
   margin: 0;
   overflow: hidden;
@@ -327,12 +332,27 @@ const goToProductRecommend = function () {
   padding: 0.25rem 1rem;
 }
 
+.hot-content {
+  font-size: 0.9rem;
+  color: #5d666e;
+  margin: 0;
+  font-weight: 400;
+  padding: 0rem 1.3rem;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.4;
+  max-height: 2.8em; /* line-height * 2줄 */
+}
+
 .post-stats {
-  margin-top: 0.5rem;
+  margin: 0.5rem 0.5rem;
   display: flex;
   justify-content: flex-end;
   color: #40A2E3;
-  font-size: 1rem;
+  font-size: 0.9rem;
   font-weight: 500;
 }
 
@@ -426,8 +446,8 @@ const goToProductRecommend = function () {
 }
 
 .cap-icon {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -573,8 +593,8 @@ const goToProductRecommend = function () {
   }
 
   .cap-icon {
-    width: 50px;
-    height: 50px;
+    width: 100px;
+    height: 100px;
   }
 
   .modal-content {
@@ -696,5 +716,27 @@ const goToProductRecommend = function () {
 
 .map-modal-footer {
   text-align: right;
+}
+
+.hot-posts-section {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: visible;
+}
+
+.cap-decoration {
+  position: absolute;
+  top: -45px;
+  left: -12px;
+  width: 70px;
+  height: 70px;
+  background-image: url('@/assets/images/boards/cap_reverse.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  transform: rotate(-13deg);
+  z-index: 1;
 }
 </style>

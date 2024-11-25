@@ -351,6 +351,10 @@ const toggleLike = async () => {
     console.error("좋아요 처리 실패:", error);
   }
 };
+
+window.onbeforeunload = function() {
+    window.scrollTo(0, 0);
+};
 </script>
 
 <style scoped>

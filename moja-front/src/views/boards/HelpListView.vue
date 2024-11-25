@@ -35,7 +35,7 @@
           <tr class="tr-cell" v-for="help in filteredHelps" :key="help.id" @click="goToDetail(help.id)">
             <td>{{ help.id }}</td>
             <td>{{ getCategoryLabel(help.help_category) }}</td>
-            <td>{{ help.user }}</td>
+            <td>{{ help.user.nickname }}</td>
             <td>{{ help.help_title }}</td>
             <td>{{ formatDate(help.help_date) }}</td>
           </tr>
@@ -63,7 +63,7 @@ const goToCreate = function () {
   if (accountStore.token === '') {
     Swal.fire({
       title: '로그인 필요',
-      text: '로그인을 해야 질문을 남길 수 있어요!',
+      text: '로그인을 해야 글을 작성할 수 있어요!',
       timer: 1500,
       icon: 'error', // success, error, warning, info
       confirmButtonText: '확인',
