@@ -87,7 +87,7 @@
           <h3 class="comment-content">{{ comment.help_comment_content }}</h3>
           <div class="comment-meta">
             <div class="comment-info">
-              <span class="comment-author">{{ comment.user }}</span>
+              <span class="comment-author">{{ comment.user.nickname }}</span>
               <span class="comment-date">{{ formatDate(comment.help_comment_date) }}</span>
             </div>
           </div>
