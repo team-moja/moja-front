@@ -26,14 +26,14 @@
             <!-- 커뮤니티 -->
             <li class="nav-item">
               <router-link to="/help" class="nav-link d-flex align-items-center">
-                <img src="/image/community.png" alt="커뮤니티" class="icon" />
+                <img src="/src/assets/images/boards/community.png" alt="커뮤니티" class="icon" />
                 <span class="d-lg-none ms-2">커뮤니티</span>
               </router-link>
             </li>
             <!-- 프로필 -->
             <li class="nav-item">
               <router-link to="/profile" class="nav-link d-flex align-items-center">
-                <img src="/image/profile.png" alt="프로필" class="icon" />
+                <img src="/src/assets/images/boards/profile.png" alt="프로필" class="icon" />
                 <span class="d-lg-none ms-2">프로필</span>
               </router-link>
             </li>
