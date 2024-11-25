@@ -334,7 +334,7 @@ const goToProductRecommend = function () {
   font-size: 0.9rem;
   color: #5d666e;
   margin: 0;
-  font-weight: 500;
+  font-weight: 400;
   padding: 0rem 1.3rem;
   display: -webkit-box;
   -webkit-box-orient: vertical;
