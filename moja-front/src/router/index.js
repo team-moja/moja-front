@@ -111,6 +111,27 @@ const router = createRouter({
       component: MyProfile,
       meta: { requiresAuth: true }
     },
+
+    {
+      path: "/card",
+      name: "cardList",
+      component: CardListView,
+    },
+    {
+      path: "/card/:id",
+      name: "cardDetail",
+      component: CardDetailView,
+    },
+    {
+      path: "/card/recommend",
+      name: "cardRecommend",
+      component: CardRecommendationView,
+    },
+    {
+      path: "/card/recommend/result",
+      name: "cardRecommendResult",
+      component: CardRecommendResultView,
+    },
   ],
   // 스크롤 동작 추가
   scrollBehavior(to, from, savedPosition) {
@@ -128,6 +149,10 @@ const router = createRouter({
 
 
 import Swal from 'sweetalert2';
+import CardListView from '@/views/cards/CardListView.vue'
+import CardDetailView from '@/views/cards/CardDetailView.vue'
+import CardRecommendationView from '@/views/cards/CardRecommendationView.vue'
+import CardRecommendResultView from '@/views/cards/CardRecommendResultView.vue'
 
 router.beforeEach((to, from, next) => {
   const accountStore = useAccountStore()

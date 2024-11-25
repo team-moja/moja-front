@@ -44,7 +44,7 @@
       <div class="col-md-9 content-field">
         <div class="d-flex justify-content-between align-items-center mb-3">
           <h2>예/적금 목록</h2>
-          <button class="btn btn-primary" @click="moveToRecommend">예적금 추천</button>
+          <!-- <button class="btn btn-primary" @click="moveToRecommend">예적금 추천</button> -->
         </div>
 
         <div class="row g-4">
@@ -173,49 +173,49 @@ const banks = ref([
     "bank_url": "http://www.kbstar.com"
   },
   {
-    "id": 13,
+    "id": 12,
     "bank_nick": "신한",
     "bank_name": "신한은행",
     "bank_code": "0011625",
     "bank_url": "http://www.shinhan.com"
   },
   {
-    "id": 14,
+    "id": 13,
     "bank_nick": "농협",
     "bank_name": "농협은행주식회사",
     "bank_code": "0013175",
     "bank_url": "https://banking.nonghyup.com"
   },
   {
-    "id": 15,
+    "id": 14,
     "bank_nick": "하나",
     "bank_name": "하나은행",
     "bank_code": "0013909",
     "bank_url": "http://www.hanabank.com"
   },
   {
-    "id": 16,
+    "id": 15,
     "bank_nick": "케이",
     "bank_name": "주식회사 케이뱅크",
     "bank_code": "0014674",
     "bank_url": "https://www.kbanknow.com"
   },
   {
-    "id": 17,
+    "id": 16,
     "bank_nick": "수협",
     "bank_name": "수협은행",
     "bank_code": "0014807",
     "bank_url": "http://www.suhyup-bank.com"
   },
   {
-    "id": 18,
+    "id": 17,
     "bank_nick": "카카오",
     "bank_name": "주식회사 카카오뱅크",
     "bank_code": "0015130",
     "bank_url": "https://www.kakaobank.com/"
   },
   {
-    "id": 19,
+    "id": 18,
     "bank_nick": "토스",
     "bank_name": "토스뱅크 주식회사",
     "bank_code": "0017801",

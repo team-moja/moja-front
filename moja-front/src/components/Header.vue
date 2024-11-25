@@ -64,6 +64,11 @@
                 <span>예적금</span>
               </RouterLink>
             </li>
+            <li class="nav-item">
+              <RouterLink to="/card" class="nav-link d-flex align-items-center">
+                <span>카드</span>
+              </RouterLink>
+            </li>
           </ul>
         </div>
         <div v-if="accountStore.isSuccess" class="modal-backdrop">
