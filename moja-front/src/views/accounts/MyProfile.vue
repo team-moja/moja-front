@@ -821,7 +821,7 @@ const fetchUserProducts = async () => {
 const deleteUserProduct = async (productId) => {
   try {
     await axios.delete("http://127.0.0.1:8000/finances/user-product/", {
-      data: { product_id: productId },
+      data: { product_id: productId, user_id: accountStore.userId },
     });
     // 상품 목록 갱신
     await fetchUserProducts();
